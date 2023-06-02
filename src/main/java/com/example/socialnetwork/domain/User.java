@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Setter
 @Builder
 @ToString(callSuper = true)
-public class User implements UserDetails, Serializable {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id",nullable = false)

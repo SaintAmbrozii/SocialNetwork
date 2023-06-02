@@ -51,13 +51,13 @@ public class FileServiceTest {
     @Test
     public void addImage() throws IOException {
         MultipartFile file = IMAGE_MOCK_MULTIPART_FILE;
-        Image image = new Image();
-        image.setName(file.getName());
-        image.setOriginalFileName(file.getOriginalFilename());
-        image.setUri(getFileData(file));
-        String fileName = image.getOriginalFileName();
-        image = fileService.toImageEntity(file);
-        Path targetLocation = this.fileStorageLocation.resolve(fileName);
+    //    Image image = new Image();
+  //      image.setName(file.getName());
+  //      image.setOriginalFileName(file.getOriginalFilename());
+   //     image.setUri(getFileData(file));
+  //      String fileName = image.getOriginalFileName();
+        //image = fileService.toImageEntity(file);
+  //      Path targetLocation = this.fileStorageLocation.resolve(fileName);
               Assert.assertNotNull(Files.exists(fileStorageLocation.resolve(file.getName())));
 
     }

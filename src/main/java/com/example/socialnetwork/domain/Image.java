@@ -1,14 +1,17 @@
 package com.example.socialnetwork.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "images")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,13 +19,12 @@ public class Image {
     private Long id;
     @Column(name = "name")
     private String name;
-    @Column(name = "originalFileName")
-    private String originalFileName;
     @Column(name = "uri")
     private String uri;
 
-    public Image(String name, String uri) {
+    public Image(String name, String originalFileName, String uri) {
     }
+
 
     @Override
     public boolean equals(Object o) {

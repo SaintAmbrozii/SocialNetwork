@@ -4,14 +4,12 @@ import com.example.socialnetwork.domain.*;
 import com.example.socialnetwork.exception.IgnoredSocialNetworkException;
 import com.example.socialnetwork.payload.PostDTO;
 import com.example.socialnetwork.payload.UserDTO;
+import com.example.socialnetwork.repo.ImageRepo;
 import com.example.socialnetwork.repo.PostRepo;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
@@ -25,16 +23,19 @@ public class PostService {
     private final UserDetailService userDetailService;
     private final UserService userService;
     private final FileService fileService;
+    private final ImageRepo imageRepo;
+
 
 ;
 
 
     public PostService(PostRepo postRepo, UserDetailService userDetailService, UserService userService1,
-                       FileService fileService) {
+                       FileService fileService, ImageRepo imageRepo) {
         this.postRepo = postRepo;
         this.userDetailService = userDetailService;
         this.userService = userService1;
         this.fileService = fileService;
+        this.imageRepo = imageRepo;
     }
     public Post addPost(Principal principal,PostDTO postDTO) {
         Post post = new Post();
@@ -47,10 +48,11 @@ public class PostService {
         if (files != null) {
             List<Image> images = Arrays.asList(files).stream()
                     .map(file -> {
-                        String name = fileService.saveFile(file);
+                        String name =  fileService.saveFile(file);
                         String uri = getFileData(file);
-                        return new Image(name,uri);
+                        return imageRepo.save(Image.builder().uri(uri).name(name).build());
                     }).collect(Collectors.toList());
+
             post.getImages().addAll(images);
         }
         return postRepo.save(post);
@@ -64,10 +66,11 @@ public class PostService {
             if (files!=null) {
                 List<Image> images = Arrays.asList(files).stream()
                         .map(file -> {
-                            String name = fileService.saveFile(file);
+                            String name =  fileService.saveFile(file);
                             String uri = getFileData(file);
-                            return new Image(name, uri);
+                            return imageRepo.save(Image.builder().uri(uri).name(name).build());
                         }).collect(Collectors.toList());
+
                 inDB.getImages().addAll(images);
             }
             postRepo.save(inDB);

@@ -3,6 +3,7 @@ package com.example.socialnetwork.controller;
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.payload.UserDTO;
 import com.example.socialnetwork.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.Set;
 @RequestMapping("api/users")
 public class UserController {
     private final UserService userService;
+
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -28,8 +30,8 @@ public class UserController {
         userService.deleteUser(user);
     }
     @GetMapping("/username")
-    public String getUserName(@AuthenticationPrincipal User user) {
-        return user.getName();
+    public String getUserName(Principal principal) {
+       return principal.getName();
     }
     @GetMapping
     public List<UserDTO> allUsers() {
