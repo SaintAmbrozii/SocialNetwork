@@ -1,4 +1,4 @@
-package com.example.socialnetwork;
+package com.example.socialnetwork.servicetest;
 
 import com.example.socialnetwork.domain.Image;
 import com.example.socialnetwork.repo.ImageRepo;
@@ -49,18 +49,15 @@ public class FileServiceTest {
     }
 
     @Test
-    public void addImage() throws IOException {
+    public void addFile() throws IOException {
         MultipartFile file = IMAGE_MOCK_MULTIPART_FILE;
-    //    Image image = new Image();
-  //      image.setName(file.getName());
-  //      image.setOriginalFileName(file.getOriginalFilename());
-   //     image.setUri(getFileData(file));
-  //      String fileName = image.getOriginalFileName();
-        //image = fileService.toImageEntity(file);
-  //      Path targetLocation = this.fileStorageLocation.resolve(fileName);
+
+        String fileName = file.getOriginalFilename();
+        Path targetLocation = this.fileStorageLocation.resolve(fileName);
               Assert.assertNotNull(Files.exists(fileStorageLocation.resolve(file.getName())));
 
     }
+
     private String getFileData(MultipartFile file) {
         String uuidFile = UUID.randomUUID().toString();
         String resultFilename = uuidFile + "." + file.getOriginalFilename();

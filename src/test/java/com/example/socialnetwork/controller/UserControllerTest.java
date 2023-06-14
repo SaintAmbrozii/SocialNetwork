@@ -1,4 +1,4 @@
-package com.example.socialnetwork;
+package com.example.socialnetwork.controller;
 
 import aj.org.objectweb.asm.TypeReference;
 import com.example.socialnetwork.controller.UserController;
@@ -7,13 +7,17 @@ import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.payload.UserDTO;
 import com.example.socialnetwork.repo.UserRepo;
 import com.example.socialnetwork.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
+import org.hamcrest.core.IsNull;
 import org.junit.Assert;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,6 +29,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -34,9 +39,9 @@ import java.util.stream.Collectors;
 
 import static com.example.socialnetwork.Const.*;
 import static net.bytebuddy.matcher.ElementMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -44,10 +49,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(UserController.class)
 @WithMockUser("spring")
+@WebMvcTest(UserController.class)
 public class UserControllerTest {
 
     private static final String URL_PREFIX = "/api/users";
@@ -56,18 +59,31 @@ public class UserControllerTest {
 
     public static final String USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found for this id : ";
 
-    @InjectMocks
-    UserService userService;
+    @MockBean
+    private UserService userService;
 
 
-    ObjectMapper objectMapper;
-    @Autowired
-    UserRepo repository;
+
+    private ObjectMapper mapper;
+
+    @MockBean
+    private UserRepo repository;
+
 
     private MockMvc mockMvc;
-    @AfterEach
-    public void resetDb() {
-        repository.deleteAll();
+
+    Principal principal;
+
+    @BeforeEach
+    public void init() {
+        principal = new Principal() {
+
+            @Override
+            public String getName() {
+                return USERNAME;
+            }
+        };
+
     }
 
     public static User getDefaultUser() {
@@ -79,19 +95,20 @@ public class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Get by ID")
-    void getByIdFound() throws Exception {
-        var input = getDefaultUser();
-        when(userService.findById(any())).thenReturn(getDefaultUser());
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(URL_PREFIX+ "/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+    void createUser() throws Exception {
+        User user = getDefaultUser();
+        Mockito.when(userService.createUser(user)).thenReturn(user);
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(this.mapper.writeValueAsString(user));
+
+        mockMvc.perform(mockRequest)
                 .andExpect(status().isOk())
-                .andReturn();
-        var output = objectMapper.readValue(result.getResponse().getContentAsString(), UserDTO.class);
-        assertEquals(input.getId(), output.getId());
-        assertEquals(input.getEmail(), output.getEmail());
+                .andExpect((ResultMatcher) jsonPath("$", notNullValue() ))
+                .andExpect((ResultMatcher) jsonPath("$.name", is("name")));
     }
+
 
 
 

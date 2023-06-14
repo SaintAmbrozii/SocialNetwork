@@ -3,6 +3,7 @@ package com.example.socialnetwork;
 import com.example.socialnetwork.domain.Image;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -19,7 +20,6 @@ public class Const {
     public static final String EMAIL = "email@email.com";
     public static final String PHONE = "+79132821588";
     public static final Boolean EMAIL_CONFIRMED = true;
-    public static final String BIO = "bio";
     public static final LocalDateTime CREATION_DATE = LocalDateTime.now();
     public static final int LIKES = 1;
     public static final int DISLIKES = 1;
@@ -27,8 +27,12 @@ public class Const {
     public static final Long IMAGE_ID = 1L;
     public static final String IMAGE_EXTENSION = "jpg";
 
-    public static final MockMultipartFile IMAGE_MOCK_MULTIPART_FILE = new MockMultipartFile("image", "image.jpg",
+    public static final MultipartFile IMAGE_MOCK_MULTIPART_FILE = new MockMultipartFile("image", "image.jpg",
             MediaType.IMAGE_JPEG_VALUE, "image bytes".getBytes());
+    public static final MultipartFile [] IMAGE_MOCK_MULTIPART_FILES = new MultipartFile[3];
+    public static final Image image = new Image(IMAGE_MOCK_MULTIPART_FILE.getName(),
+            IMAGE_MOCK_MULTIPART_FILE.getOriginalFilename(), "http://localhost:8080/api/test");
+
     public static final String EMAIL_HOST = "smtp.mail.test";
     public static final String EMAIL_PASSWORD = "password";
     public static final String EMAIL_USERNAME = "username";

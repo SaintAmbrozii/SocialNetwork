@@ -1,4 +1,4 @@
-package com.example.socialnetwork;
+package com.example.socialnetwork.servicetest;
 
 import com.example.socialnetwork.domain.Comment;
 import com.example.socialnetwork.domain.Post;
@@ -16,15 +16,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Optional;
 
 import static com.example.socialnetwork.Const.PHONE;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(SpringRunner.class)
 public class CommentServiceTest {

@@ -1,4 +1,4 @@
-package com.example.socialnetwork;
+package com.example.socialnetwork.servicetest;
 
 import com.example.socialnetwork.domain.Role;
 import com.example.socialnetwork.domain.User;

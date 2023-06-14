@@ -37,6 +37,8 @@ public class JwtTokenGenerator {
                 .setExpiration(accessExpiration).signWith(getSignInKey())
                 .claim("roles", user.getRoles())
                 .claim("name",user.getName())
+                .claim("lastname",user.getLastname())
+                .claim("email",user.getEmail())
                 .compact();
     }
     public String generateRefreshToken(User user) {

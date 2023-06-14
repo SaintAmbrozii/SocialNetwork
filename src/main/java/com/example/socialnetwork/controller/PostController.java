@@ -5,17 +5,14 @@ import com.example.socialnetwork.domain.Post;
 import com.example.socialnetwork.domain.Reactions;
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.payload.PostDTO;
-import com.example.socialnetwork.payload.UserDTO;
 import com.example.socialnetwork.security.JwtTokenGenerator;
 import com.example.socialnetwork.service.PostService;
 import com.example.socialnetwork.service.UserService;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -51,7 +48,7 @@ public class PostController {
 
     @GetMapping("posts/{id}")
     public Post findById(@PathVariable(name = "id") Long id){
-        return postService.getById(id);
+        return postService.findById(id);
     }
     @DeleteMapping("posts/{id}")
     public void deletePost(@PathVariable(name = "id") Post post) {

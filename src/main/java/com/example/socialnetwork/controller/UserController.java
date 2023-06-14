@@ -2,19 +2,22 @@ package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.payload.UserDTO;
+import com.example.socialnetwork.security.JwtTokenGenerator;
 import com.example.socialnetwork.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
+import io.jsonwebtoken.Claims;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
 @RequestMapping("api/users")
 public class UserController {
     private final UserService userService;
+
 
 
     public UserController(UserService userService) {
@@ -29,9 +32,11 @@ public class UserController {
     public void deleteUser(@PathVariable(name = "id")@AuthenticationPrincipal User user) {
         userService.deleteUser(user);
     }
-    @GetMapping("/username")
-    public String getUserName(Principal principal) {
-       return principal.getName();
+
+
+    @GetMapping("/name")
+    public Optional<User> getUserName(@RequestBody String name) {
+        return userService.findByUsername(name);
     }
     @GetMapping
     public List<UserDTO> allUsers() {

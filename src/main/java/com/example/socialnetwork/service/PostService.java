@@ -3,7 +3,6 @@ package com.example.socialnetwork.service;
 import com.example.socialnetwork.domain.*;
 import com.example.socialnetwork.exception.IgnoredSocialNetworkException;
 import com.example.socialnetwork.payload.PostDTO;
-import com.example.socialnetwork.payload.UserDTO;
 import com.example.socialnetwork.repo.ImageRepo;
 import com.example.socialnetwork.repo.PostRepo;
 import org.springframework.stereotype.Service;
@@ -20,20 +19,18 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepo postRepo;
-    private final UserDetailService userDetailService;
     private final UserService userService;
     private final FileService fileService;
     private final ImageRepo imageRepo;
 
 
-;
 
 
-    public PostService(PostRepo postRepo, UserDetailService userDetailService, UserService userService1,
+
+    public PostService(PostRepo postRepo, UserService userService,
                        FileService fileService, ImageRepo imageRepo) {
         this.postRepo = postRepo;
-        this.userDetailService = userDetailService;
-        this.userService = userService1;
+        this.userService = userService;
         this.fileService = fileService;
         this.imageRepo = imageRepo;
     }
@@ -44,7 +41,7 @@ public class PostService {
     }
     public Post postWithImg(String text,MultipartFile[] files) {
             Post post = new Post();
-            post.setText(text);;
+            post.setText(text);
         if (files != null) {
             List<Image> images = Arrays.asList(files).stream()
                     .map(file -> {
@@ -59,7 +56,7 @@ public class PostService {
     }
 
 
-    public void updPost(Long id, String text,MultipartFile[] files)  {
+    public void updPost(Long id, String text, MultipartFile[] files)  {
             Post inDB = postRepo.findById(id).orElseThrow();
             inDB.setText(text);
             inDB.getImages().removeAll(inDB.getImages());
@@ -83,7 +80,7 @@ public class PostService {
     public List<PostDTO> getPosts() {
         return postRepo.findAll().stream().map(this::toPostDto).collect(Collectors.toList());
     }
-    public Post getById(Long id) {
+    public Post findById(Long id) {
        return postRepo.findById(id).orElseThrow();
     }
 
@@ -146,9 +143,8 @@ public class PostService {
         return postDTO;
     }
 
-    private User getUser(UserDTO userDto) {
-        return userService.findById(userDto.getId());
-    }
+
+
     private String getFileData(MultipartFile file) {
         String uuidFile = UUID.randomUUID().toString();
         String resultFilename = uuidFile + "." + file.getOriginalFilename();

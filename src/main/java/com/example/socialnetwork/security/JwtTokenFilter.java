@@ -7,6 +7,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +23,7 @@ import java.io.IOException;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZATION = "Authorization";
+    protected final Log logger = LogFactory.getLog(getClass());
 
     private final JwtTokenGenerator jwtTokenGenerator;
     private final UserDetailService userService;
@@ -36,11 +39,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String userName = null;
         if (token != null && token.startsWith("Bearer ")) {
             userName = jwtTokenGenerator.extractUsername(token);
+            logger.info("AuthToken: "+ token);
         }
 
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails =  getUserDetails(token);
+            UserDetails userDetails = userService.loadUserByUsername(userName);
+            logger.info("UserName: "+userName);
+                    // getUserDetails(token);
                     //userService.loadUserByUsername(userName);
 
             if (jwtTokenGenerator.validateToken(token, userDetails)) {
@@ -53,6 +59,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
          //       TokenBasedAuthentification authentication = new TokenBasedAuthentification(userDetails);
          //      authentication.setToken(token);
          //      SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+            else {
+                logger.error("Something is wrong with Token.");
             }
         }
         filterChain.doFilter(request, response);

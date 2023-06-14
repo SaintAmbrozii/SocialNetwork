@@ -22,7 +22,7 @@ public class CommentService {
         this.postService = postService;
     }
     public Comment addComment(Long postId, Comment comment,User currentUser) {
-        Post inDB = postService.getById(postId);
+        Post inDB = postService.findById(postId);
         if (inDB!=null && currentUser.isActive()) {
             inDB.getComments().add(comment);
         }
