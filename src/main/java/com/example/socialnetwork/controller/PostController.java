@@ -8,7 +8,9 @@ import com.example.socialnetwork.payload.PostDTO;
 import com.example.socialnetwork.security.JwtTokenGenerator;
 import com.example.socialnetwork.service.PostService;
 import com.example.socialnetwork.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/")
 @CrossOrigin(origins = "*")
+@SecurityRequirement(name = "JWTAuth")
 public class PostController {
 
     private final PostService postService;
@@ -33,8 +36,8 @@ public class PostController {
 
     @PostMapping(value = "posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Post addPost(@RequestPart(name = "text",required = false)String text,
-                        @RequestPart(name = "file",required = false) MultipartFile[] files)  {
-        return postService.postWithImg(text,files);
+                        @RequestPart(name = "file",required = false) MultipartFile[] files,@AuthenticationPrincipal User user)  {
+        return postService.postWithImg(text,files,user);
     }
     @PutMapping(value = "posts/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updMessage(@PathVariable(name = "id")Long id, @RequestPart(name = "text",required = false)String text,

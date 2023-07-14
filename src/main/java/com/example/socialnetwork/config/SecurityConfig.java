@@ -1,5 +1,6 @@
 package com.example.socialnetwork.config;
 
+import com.example.socialnetwork.domain.Role;
 import com.example.socialnetwork.security.JwtTokenFilter;
 import com.example.socialnetwork.security.RestAuthentificationEntryPoint;
 import com.example.socialnetwork.service.UserDetailService;
@@ -7,20 +8,17 @@ import com.example.socialnetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
 
 @Configuration
 @EnableWebSecurity
@@ -73,8 +71,9 @@ public class SecurityConfig {
                 .csrf()
                 .disable().exceptionHandling().and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/**").permitAll()
-                .requestMatchers("/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/users/**").authenticated()
+                .requestMatchers(AUTH_WHITELIST).permitAll()
                 .requestMatchers("/js/**").permitAll()
                 .requestMatchers("/download/**").permitAll()
                 .anyRequest()
@@ -85,7 +84,10 @@ public class SecurityConfig {
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-
         return http.build();
     }
+
+    private static final String[] AUTH_WHITELIST = { "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**",
+            "/webjars/**" ,"/", "/webjars/**", "/*.html", "favicon.ico", "/*/*.html"};
+
 }

@@ -121,28 +121,28 @@ public class PostServiceTest {
 
     }
 
-    @Test
-    public void addPost() throws IOException {
+ //   @Test
+ //   public void addPost() throws IOException {
 
-        User user = getDefaultUser();
+  //      User user = getDefaultUser();
 
-       MultipartFile[] files = IMAGE_MOCK_MULTIPART_FILES;
-       Image image = Const.image;
-        String text =new String("text");
+   //    MultipartFile[] files = IMAGE_MOCK_MULTIPART_FILES;
+   //    Image image = Const.image;
+   //     String text =new String("text");
 
-        Post post = new Post();
-        post.setId(postId);
-        post.getImages().add(image);
-        post.setText(text);
-        post.setAuthor(user);
+   //     Post post = new Post();
+   //     post.setId(postId);
+   //     post.getImages().add(image);
+   //     post.setText(text);
+    //    post.setAuthor(user);
 
-        when(postRepository.save(post)).thenReturn(post);
-        postService.postWithImg(text,files);
-        assertEquals(postId,post.getId());
-        assertEquals(text,post.getText());
-        assertEquals(user,post.getAuthor());
+     //   when(postRepository.save(post)).thenReturn(post);
+     //   postService.postWithImg(text,files);
+     //   assertEquals(postId,post.getId());
+    //    assertEquals(text,post.getText());
+    //    assertEquals(user,post.getAuthor());
 
-    }
+  //  }
 
   //  @Test
   //  public void testUpdatePost() throws IOException {

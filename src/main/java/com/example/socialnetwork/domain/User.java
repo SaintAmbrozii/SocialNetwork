@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Setter
 @Builder
 @ToString(callSuper = true)
-public class User implements UserDetails {
+public class User implements UserDetails  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id",nullable = false)
@@ -87,10 +87,12 @@ public class User implements UserDetails {
     @ToString.Exclude
     private Set<User> subscriptions = new HashSet<>();
 
-    public User(Long id, String name, String email, String password, Set<Role> roles) {
+
+
+    public User(long l, String test, String s, String s1) {
     }
 
-  //  public User(Long id, String name, String email, String password, List<GrantedAuthority> authorities) {
+    //  public User(Long id, String name, String email, String password, List<GrantedAuthority> authorities) {
   //  }
 
 
@@ -138,6 +140,7 @@ public class User implements UserDetails {
         return dislikesPosts.contains(post);
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
@@ -165,22 +168,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isActive;
+        return true;
     }
-
-    //  public static User build(User user) {
- //       List<GrantedAuthority> authorities = user.getRoles().stream()
- //               .map(role -> new SimpleGrantedAuthority(role.name()))
- //               .collect(Collectors.toList());
-//
- //       return new User(
-//                user.getId(),
-///                user.getName(),
-//                user.getEmail(),
- //               user.getPassword(),
- //               authorities);
- //   }
-
-
-
 }

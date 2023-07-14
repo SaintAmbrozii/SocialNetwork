@@ -4,6 +4,7 @@ import com.example.socialnetwork.domain.Comment;
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.payload.CommentDTO;
 import com.example.socialnetwork.service.CommentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/")
+@SecurityRequirement(name = "JWTAuth")
 public class CommentController {
 
     private final CommentService commentService;

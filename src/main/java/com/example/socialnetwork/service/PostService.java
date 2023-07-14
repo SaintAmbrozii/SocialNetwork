@@ -39,9 +39,11 @@ public class PostService {
         post.setText(post.getText());
         return postRepo.save(post);
     }
-    public Post postWithImg(String text,MultipartFile[] files) {
+    public Post postWithImg(String text,MultipartFile[] files,User user) {
             Post post = new Post();
             post.setText(text);
+            post.setAuthor(user);
+            post.setUsername(user.getName());
         if (files != null) {
             List<Image> images = Arrays.asList(files).stream()
                     .map(file -> {

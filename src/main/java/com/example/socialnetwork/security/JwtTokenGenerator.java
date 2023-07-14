@@ -77,6 +77,10 @@ public class JwtTokenGenerator {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    public String getUsername(String username) {
+        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(username).getBody().getSubject();
+    }
+
 
  //   public Claims getAccessClaims(@NonNull String token) {
  //       return getClaims(token, jwtAccessSecret);

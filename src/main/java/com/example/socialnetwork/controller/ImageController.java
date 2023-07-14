@@ -2,6 +2,7 @@ package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.domain.Image;
 import com.example.socialnetwork.service.ImageService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/images")
+@SecurityRequirement(name = "JWTAuth")
 public class ImageController {
 
     private final ImageService imageService;

@@ -5,6 +5,9 @@ import com.example.socialnetwork.payload.UserDTO;
 import com.example.socialnetwork.security.JwtTokenGenerator;
 import com.example.socialnetwork.service.UserService;
 import io.jsonwebtoken.Claims;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("api/users")
+@SecurityRequirement(name = "JWTAuth")
 public class UserController {
     private final UserService userService;
 
@@ -29,21 +33,22 @@ public class UserController {
          return userService.createUser(user);
     }
     @DeleteMapping("{id}")
-    public void deleteUser(@PathVariable(name = "id")@AuthenticationPrincipal User user) {
+    public void deleteUser(@PathVariable(name = "id") User user) {
         userService.deleteUser(user);
     }
 
 
     @GetMapping("/name")
-    public Optional<User> getUserName(@RequestBody String name) {
-        return userService.findByUsername(name);
+    public Optional<User> getUserName(@AuthenticationPrincipal User user) {
+        return userService.findByUsername(user.getName());
     }
+    @Operation(description = "getAllUsers")
     @GetMapping
     public List<UserDTO> allUsers() {
         return userService.getAllUsers();
     }
     @PutMapping("{id}")
-    public User updateUser(@PathVariable(name = "id")Long id,@RequestBody @AuthenticationPrincipal User user) {
+    public User updateUser(@PathVariable(name = "id")Long id,@RequestBody User user) {
         return userService.updateUser(id, user);
     }
     @GetMapping("{id}")
@@ -51,11 +56,11 @@ public class UserController {
         return userService.findById(id);
     }
     @PutMapping("{id}/subscribes")
-    public void subscribeByUser(@PathVariable(name = "id") Long id, @AuthenticationPrincipal User user){
+    public void subscribeByUser(@PathVariable(name = "id") Long id,  User user){
         userService.subscribeByUser(user, id);
     }
     @PutMapping("{id}/unsubscribes")
-    public void unSubscribeUser(@PathVariable(name = "id")Long id,@AuthenticationPrincipal User user){
+    public void unSubscribeUser(@PathVariable(name = "id")Long id,User user){
          userService.unSubscribeByUser(user, id);
     }
     @GetMapping("{id}/subscribers")

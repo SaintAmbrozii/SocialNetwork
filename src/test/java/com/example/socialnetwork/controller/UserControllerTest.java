@@ -1,76 +1,65 @@
 package com.example.socialnetwork.controller;
 
-import aj.org.objectweb.asm.TypeReference;
-import com.example.socialnetwork.controller.UserController;
-import com.example.socialnetwork.domain.Role;
+
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.payload.UserDTO;
 import com.example.socialnetwork.repo.UserRepo;
 import com.example.socialnetwork.service.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
+import com.example.socialnetwork.servicetest.UserServiceTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
-import org.hamcrest.core.IsNull;
-import org.junit.Assert;
+
 import org.junit.jupiter.api.*;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
+
+import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+;
+
 
 import java.security.Principal;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 import static com.example.socialnetwork.Const.*;
 import static net.bytebuddy.matcher.ElementMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@WithMockUser("spring")
-@WebMvcTest(UserController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class UserControllerTest {
 
     private static final String URL_PREFIX = "/api/users";
     private static final Long USER_ID = 1L;
     private static final String USERNAME = "user1";
 
-    public static final String USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found for this id : ";
 
     @MockBean
     private UserService userService;
 
 
 
+
+    @Autowired
     private ObjectMapper mapper;
 
     @MockBean
     private UserRepo repository;
 
-
-    private MockMvc mockMvc;
+     @Autowired
+    MockMvc mockMvc;
 
     Principal principal;
 
@@ -89,7 +78,7 @@ public class UserControllerTest {
     public static User getDefaultUser() {
         var result = User.builder().id(ID).name(NAME).lastname(SECOND_NAME).
                 password(PASSWORD).email(EMAIL).phone(PHONE).build();
-        result.setRoles(Collections.singleton(Role.USER));
+
 
         return result;
     }
@@ -97,17 +86,61 @@ public class UserControllerTest {
     @Test
     void createUser() throws Exception {
         User user = getDefaultUser();
-        Mockito.when(userService.createUser(user)).thenReturn(user);
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("api/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(user));
 
-        mockMvc.perform(mockRequest)
-                .andExpect(status().isOk())
-                .andExpect((ResultMatcher) jsonPath("$", notNullValue() ))
-                .andExpect((ResultMatcher) jsonPath("$.name", is("name")));
+        Mockito.when(userService.createUser(user)).thenReturn(user);
+
+
+
+        mockMvc.perform(post("/api/users").content(mapper.writeValueAsString(user)).contentType(MediaType.APPLICATION_JSON).
+                        accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
+
+               .andExpect(status().isOk())
+                .andExpect((ResultMatcher) jsonPath("$.name", is("name")))
+                .andExpect((ResultMatcher) jsonPath("$.email",is("email@email.com")))
+                .andReturn();
+
     }
+    @Test
+    void testGetAllUsers() throws Exception {
+        List<UserDTO> users = new ArrayList<>();
+        users.add(new UserDTO());
+        users.add(new UserDTO());
+        when(userService.getAllUsers()).thenReturn(users);
+        mockMvc.perform(get(URL_PREFIX)).andExpect(status().isOk())
+                .andExpect((ResultMatcher)jsonPath("$.size",is(users.size())));
+    }
+
+    @Test
+    void getUserId() throws Exception {
+        Long id = 1L;
+        User user = getDefaultUser();
+
+        when(userService.findById(id)).thenReturn(user);
+        mockMvc.perform(get("/api/users/{id}",id)).andExpect(status().isOk())
+                .andExpect((ResultMatcher) jsonPath("$.id").value(id))
+                .andExpect((ResultMatcher) jsonPath("$.name").value("name"));
+    }
+
+    @Test
+    void updateUser() throws Exception {
+        User user = User.builder()
+                .id(USER_ID)
+                .name(USERNAME)
+                .email("user@test.com").subscribers(Set.of(User.builder().id(2L).build(), User.builder().id(3L).build()))
+                .build();
+        when(userService.updateUser(USER_ID,user)).thenReturn(user);
+        mockMvc.perform(put("/api/users/{id}",USER_ID).content(mapper.writeValueAsString(user)).contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andExpect((ResultMatcher) jsonPath("$.id").value(user.getId()))
+                .andExpect((ResultMatcher) jsonPath("$.name").value("user1"));
+    }
+
+    void deleteUser() throws Exception {
+        User user = getDefaultUser();
+        mockMvc.perform(delete("/api/users/{id}",user.getId())).andExpect(status().isNoContent());
+    }
+
 
 
 
