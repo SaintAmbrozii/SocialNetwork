@@ -36,6 +36,7 @@ public class UserDetailService implements UserDetailsService {
             throw new NotFoundSocialNetworkException("No user exists with this email.");
         } else {
             return user;
+
         }
 
     }

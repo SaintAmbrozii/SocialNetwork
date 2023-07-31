@@ -7,6 +7,7 @@ import com.example.socialnetwork.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -19,6 +20,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("api/users")
 @SecurityRequirement(name = "JWTAuth")
+@PreAuthorize("hasRole('USER')")
 public class UserController {
     private final UserService userService;
 

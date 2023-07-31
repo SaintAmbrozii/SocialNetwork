@@ -35,8 +35,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = AUTHORIZATION;
-                //getTokenFromRequest((HttpServletRequest) request);
+        String token = getTokenFromRequest(request);
         String userName = null;
         if (token != null && token.startsWith("Bearer ")) {
       //      userName = jwtTokenGenerator.extractUsername(token);
@@ -58,10 +57,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 usernamePasswordAuthenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
              SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-         //       TokenBasedAuthentification authentication = new TokenBasedAuthentification(userDetails);
-         //      authentication.setToken(token);
-         //      SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+           }
             else {
                 logger.error("Something is wrong with Token.");
             }
@@ -78,11 +74,5 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
         return null;
     }
-    private UserDetails getUserDetails(String token) {
-        User userDetails = new User();
-        String username = jwtTokenGenerator.extractUsername(token);
-        userDetails.setName(username);
 
-        return (UserDetails) userDetails;
-    }
 }

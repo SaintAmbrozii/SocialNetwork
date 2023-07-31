@@ -8,14 +8,10 @@ import com.example.socialnetwork.exception.UserIsExist;
 import com.example.socialnetwork.payload.UserDTO;
 import com.example.socialnetwork.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

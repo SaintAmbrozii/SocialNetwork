@@ -42,6 +42,7 @@ public class User implements UserDetails  {
     private String avatarUri;
     private boolean isActive;
 
+
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Role.class,fetch = FetchType.LAZY)
     @CollectionTable(name = "user_role",joinColumns = @JoinColumn(name = "customer_id"))
@@ -148,7 +149,7 @@ public class User implements UserDetails  {
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override
