@@ -20,7 +20,6 @@ import java.util.Set;
 @RestController
 @RequestMapping("api/users")
 @SecurityRequirement(name = "JWTAuth")
-@PreAuthorize("hasRole('USER')")
 public class UserController {
     private final UserService userService;
 

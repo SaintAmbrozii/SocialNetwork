@@ -13,13 +13,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
+
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZATION = "Authorization";
@@ -52,11 +53,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             if (jwtTokenGenerator.validateToken(token, userDetails)) {
 
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                    UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
+                authenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
            }
             else {
                 logger.error("Something is wrong with Token.");
