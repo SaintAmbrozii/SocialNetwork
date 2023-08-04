@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 public class TokenResponse {
 
-    private final String type = "Bearer";
     private String token;
     private String refreshToken;
+    private final String type = "Bearer";
 }

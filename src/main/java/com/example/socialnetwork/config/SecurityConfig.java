@@ -46,9 +46,6 @@ import java.io.IOException;
 @EnableMethodSecurity(prePostEnabled = true,securedEnabled = true,jsr250Enabled = true)
 public class SecurityConfig {
 
-    private static final String AUTHORIZATION = "Authorization";
-    protected final Log logger = LogFactory.getLog(getClass());
-
 
 
 

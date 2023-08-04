@@ -44,7 +44,7 @@ public class User implements UserDetails  {
 
 
     @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = Role.class,fetch = FetchType.LAZY)
+    @ElementCollection(targetClass = Role.class,fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role",joinColumns = @JoinColumn(name = "customer_id"))
     private Set<Role> roles = new HashSet<>();
 
