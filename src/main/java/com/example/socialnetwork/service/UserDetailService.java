@@ -32,7 +32,7 @@ public class UserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         final User user = userRepo.findByEmail(email).orElseThrow();
-        if (user==null) {
+        if (user == null) {
             throw new NotFoundSocialNetworkException("No user exists with this email.");
         } else {
             return user;
@@ -41,13 +41,4 @@ public class UserDetailService implements UserDetailsService {
 
     }
 
-
-
-
-   //     return User.build(authUser);
-        //org.springframework.security.core.userdetails.User.builder()
-              // // .username(authUser.getName())
-               // .password(authUser.getPassword())
-              //  .authorities(authUser.getRoles())
-              //  .build();
-    }
+}

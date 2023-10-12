@@ -90,12 +90,6 @@ public class AuthService {
     }
 
 
-    public AuthService requireLogin(Principal principal) {
-        if (principal == null) {
-            return null;
-        }
-        return this;
-    }
 
 
 }

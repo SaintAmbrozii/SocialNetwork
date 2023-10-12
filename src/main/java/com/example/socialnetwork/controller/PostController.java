@@ -24,28 +24,36 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final UserService userService;
-    private final JwtTokenGenerator jwtTokenGenerator;
 
-    public PostController(PostService postService, UserService userService, JwtTokenGenerator jwtTokenGenerator) {
+
+    public PostController(PostService postService) {
         this.postService = postService;
-        this.userService = userService;
-        this.jwtTokenGenerator = jwtTokenGenerator;
+
     }
 
 
     @PostMapping(value = "posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Post addPost(@RequestPart(name = "text",required = false)String text,
-                        @RequestPart(name = "file",required = false) MultipartFile[] files,@AuthenticationPrincipal User user)  {
-        return postService.postWithImg(text,files,user);
+    public Post addPost(@RequestBody PostDTO postDTO,
+                        @RequestPart(name = "file",required = false) List<MultipartFile>files,@AuthenticationPrincipal User user)  {
+        return postService.postWithImg(postDTO,files,user);
     }
+  //  @PostMapping(value = "posts")
+ //   public Post createPost(@RequestBody PostDTO postDTO,@AuthenticationPrincipal User user) {
+ //       return postService.addPost(user, postDTO);
+ //   }
+    @GetMapping("posts/getAllByUser")
+    public List<PostDTO> getAllByUser(@AuthenticationPrincipal User user) {
+        return postService.getAllByUserId(user);
+    }
+
+
     @PutMapping(value = "posts/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void updMessage(@PathVariable(name = "id")Long id, @RequestPart(name = "text",required = false)String text,
-                           @RequestPart(name = "file",required = false)MultipartFile[] files) {
-         postService.updPost(id, text, files);
+    public PostDTO updMessage(@PathVariable(name = "id")Long id, @RequestBody PostDTO postDTO,
+                           @RequestPart(name = "file",required = false)List<MultipartFile> files,@AuthenticationPrincipal User user) {
+        return postService.updPost(id, postDTO, files,user);
     }
     @GetMapping(value = "posts")
-    public List<PostDTO> getPosts(@RequestBody(required = false) PostDTO postDTO) {
+    public List<PostDTO> getPosts() {
         return postService.getPosts();
     }
 
@@ -53,6 +61,7 @@ public class PostController {
     public Post findById(@PathVariable(name = "id") Long id){
         return postService.findById(id);
     }
+
     @DeleteMapping("posts/{id}")
     public void deletePost(@PathVariable(name = "id") Post post) {
         postService.deletePost(post);

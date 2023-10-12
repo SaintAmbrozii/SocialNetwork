@@ -29,17 +29,10 @@ public class Const {
 
     public static final MultipartFile IMAGE_MOCK_MULTIPART_FILE = new MockMultipartFile("image", "image.jpg",
             MediaType.IMAGE_JPEG_VALUE, "image bytes".getBytes());
-    public static final MultipartFile [] IMAGE_MOCK_MULTIPART_FILES = new MultipartFile[3];
+
     public static final Image image = new Image(IMAGE_MOCK_MULTIPART_FILE.getName(),
             IMAGE_MOCK_MULTIPART_FILE.getOriginalFilename(), "http://localhost:8080/api/test");
 
-    public static final String EMAIL_HOST = "smtp.mail.test";
-    public static final String EMAIL_PASSWORD = "password";
-    public static final String EMAIL_USERNAME = "username";
-    public static final String EMAIL_SEND_TO = "sendTo@mail.com";
-    public static final String EMAIL_SUBJECT = "subject";
-    public static final Object FIRSTNAME_VARIABLE = "FirstnameVariable";
-    public static final String EMAIL_CONFIRMATION_URL = "https://www.photogram.com/confirm?token=%s";
 
     public static final long SECOND_ID = 2L;
     public static final String SECOND_USERNAME = "second_username";
@@ -49,7 +42,6 @@ public class Const {
     public static final String SECOND_EMAIL = "second_email@email.com";
     public static final Boolean SECOND_EMAIL_CONFIRMED = false;
     public static final String SECOND_BIO = "second_bio";
-    public static final LocalDateTime SECOND_CREATION_DATE = LocalDateTime.now(ZoneId.of("Brazil/East"));
     public static final String SECOND_ROLE = "SECOND_ROLE";
     public static final String SECOND_CAPTION = "second_caption";
     public static final String SECOND_LOCATION = "second_location";

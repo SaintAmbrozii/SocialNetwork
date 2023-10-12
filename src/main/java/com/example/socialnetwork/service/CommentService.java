@@ -7,6 +7,7 @@ import com.example.socialnetwork.payload.CommentDTO;
 import com.example.socialnetwork.repo.CommentRepo;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,43 +24,50 @@ public class CommentService {
     }
     public Comment addComment(Long postId, Comment comment,User currentUser) {
         Post inDB = postService.findById(postId);
-        if (inDB!=null && currentUser.isActive()) {
+        if (currentUser.isEnabled()) {
             inDB.getComments().add(comment);
         }
         comment.setText(comment.getText());
-        comment.setAuthor(currentUser);
-        comment.setPost(inDB);
+        comment.setUserId(currentUser.getId());
+        comment.setUsername(comment.getUsername());
+        comment.setLastname(currentUser.getLastname());
+        comment.setDateTime(LocalDateTime.now());
          return commentRepo.save(comment);
     }
     public void deleteComment(Comment comment,User currentUser) {
-        if (currentUser.isActive()) {
+        if (currentUser.isEnabled()) {
             commentRepo.delete(comment);
         }
     }
-    public Comment updComment(Long commentId, Comment comment,User currentUser) {
+    public Comment updComment(Long commentId, CommentDTO commentDTO,User currentUser) {
        Comment inDb = commentRepo.findById(commentId).orElseThrow();
-       if (inDb!=null && currentUser.isActive()) {
-           inDb.setText(comment.getText());
+       if (currentUser.isEnabled()) {
+           inDb.setText(commentDTO.getText());
+           inDb.setDateTime(LocalDateTime.now());
        }
        return commentRepo.save(inDb);
     }
     public Comment findById(Long id) {
         return commentRepo.findById(id).orElseThrow();
     }
+
     public List<CommentDTO> getAllComments () {
         return commentRepo.findAll().stream().map(this::toCommentDto).collect(Collectors.toList());
     }
 
-    public List<Comment> getCommentsByPost(Long postId) {
-        return commentRepo.getCommentByPostId(postId);
+    public List<CommentDTO> getCommentsByPost(Long postId) {
+        return commentRepo.getCommentByPostId(postId).stream().map(this::toCommentDto).collect(Collectors.toList());
     }
 
     private CommentDTO toCommentDto(Comment comment) {
         CommentDTO commentDto = new CommentDTO();
-        commentDto.setAuthor(String.valueOf(comment.getAuthor()));
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());
         commentDto.setPostId(commentDto.getPostId());
+        commentDto.setUsername(commentDto.getUsername());
+        commentDto.setLastname(commentDto.getLastname());
+        commentDto.setUserId(commentDto.getUserId());
+        commentDto.setDateTime(comment.getDateTime());
         return commentDto;
     }
 }

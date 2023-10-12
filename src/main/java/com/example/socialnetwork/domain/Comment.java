@@ -1,11 +1,10 @@
 package com.example.socialnetwork.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -24,14 +23,21 @@ public class Comment {
     @Column(name = "comment_id")
     private Long id;
 
-    @ManyToOne(cascade=CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private User author;
     @Column(name = "text",length = 2048)
     private String text;
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @Column(name = "userId")
+    private Long userId;
+    @Column(name = "userName")
+    private String username;
+    @Column(name = "lastName")
+    private String lastname;
+
+    @Column(name = "dateTime")
+    private LocalDateTime dateTime;
 
     @Override
     public boolean equals(Object o) {

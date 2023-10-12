@@ -2,6 +2,7 @@ package com.example.socialnetwork.servicetest;
 
 import com.example.socialnetwork.domain.Comment;
 import com.example.socialnetwork.domain.Post;
+import com.example.socialnetwork.domain.Role;
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.repo.CommentRepo;
 import com.example.socialnetwork.repo.PostRepo;
@@ -16,9 +17,12 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-import static com.example.socialnetwork.Const.PHONE;
+import static com.example.socialnetwork.Const.*;
+import static com.example.socialnetwork.Const.EMAIL;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 public class CommentServiceTest {
@@ -44,31 +48,39 @@ public class CommentServiceTest {
         MockitoAnnotations.openMocks(this);
 
     }
+
+    public static User getDefaultUser() {
+        var result = User.builder().id(ID).name(NAME).lastname(SECOND_NAME).
+                password(PASSWORD).email(EMAIL).phone(PHONE).build();
+        result.setRoles(Collections.singleton(Role.USER));
+
+        return result;
+    }
+
     public static Comment getDefaultComment() {
-        User expectedUser = User.builder()
-                .id(userId)
-                .name("user")
-                .lastname("lastname")
-                .email("user@test.com")
-                .phone(PHONE)
-                .build();
         Post post = Post.builder().id(commentId).comments(new ArrayList<>()).build();
         var result = new Comment();
         result.setId(1L);
-        result.setAuthor(expectedUser);
         result.setPost(post);
+        result.setUsername(getDefaultUser().getName());
+        result.setUserId(getDefaultUser().getId());
+        return result;
+    }
+    public static Post getDefaultPost() {
+        var result = new Post();
+        result.setId(ID);
+        result.setText("text");
+        result.setUsername(getDefaultUser().getName());
+        result.setUserId(getDefaultUser().getId());
+
         return result;
     }
     @Test
-    public void addComment() {}{
-        User user = UserServiceTest.getDefaultUser();
-        Post post = Post.builder()
-                .id(1L)
-                .text("text")
-                .author(user)
-                .comments(new ArrayList<>()).build();
-        Comment comment = Comment.builder().id(commentId).author(user).build();
-        post.getComments().add(comment);
+    public void addCommentByPost() {}{
+        Post post = getDefaultPost();
+        Comment comment = Comment.builder().id(commentId).build();
+
+
         assertEquals(1,post.getComments().size());
     }
 

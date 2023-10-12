@@ -43,18 +43,12 @@ public class User implements UserDetails  {
     private boolean isActive;
 
 
+
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Role.class,fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role",joinColumns = @JoinColumn(name = "customer_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
-    @ToString.Exclude
-    private List<Post> posts;
-
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
-    @ToString.Exclude
-    private List<Comment> comments;
 
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinTable(name = "users_likes",
@@ -79,7 +73,7 @@ public class User implements UserDetails  {
     @ToString.Exclude
     private Set<User> subscribers = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_subscriptions",
             joinColumns = { @JoinColumn(name = "subscriber_id") },
@@ -93,8 +87,6 @@ public class User implements UserDetails  {
     public User(long l, String test, String s, String s1) {
     }
 
-    //  public User(Long id, String name, String email, String password, List<GrantedAuthority> authorities) {
-  //  }
 
 
     public Boolean isSubscriptions(User user) {

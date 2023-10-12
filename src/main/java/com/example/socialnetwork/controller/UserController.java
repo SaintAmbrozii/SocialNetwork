@@ -34,13 +34,13 @@ public class UserController {
          return userService.createUser(user);
     }
     @DeleteMapping("{id}")
-    public void deleteUser(@PathVariable(name = "id") User user) {
+    public void deleteUser(@PathVariable(name = "id") @AuthenticationPrincipal User user) {
         userService.deleteUser(user);
     }
 
 
-    @GetMapping("/name")
-    public Optional<User> getUserName(@AuthenticationPrincipal User user) {
+    @GetMapping("/profile")
+    public Optional<User> profile(@AuthenticationPrincipal User user) {
         return userService.findByUsername(user.getName());
     }
     @Operation(description = "getAllUsers")
@@ -49,25 +49,27 @@ public class UserController {
         return userService.getAllUsers();
     }
     @PutMapping("{id}")
-    public User updateUser(@PathVariable(name = "id")Long id,@RequestBody User user) {
+    public User updateUser(@PathVariable(name = "id")Long id,@RequestBody @AuthenticationPrincipal User user) {
         return userService.updateUser(id, user);
     }
     @GetMapping("{id}")
     public User findById(@PathVariable(name = "id")Long id) {
         return userService.findById(id);
     }
+
     @PutMapping("{id}/subscribes")
-    public void subscribeByUser(@PathVariable(name = "id") Long id,  User user){
+    public void subscribeByUser(@PathVariable(name = "id") Long id, @AuthenticationPrincipal  User user){
         userService.subscribeByUser(user, id);
     }
     @PutMapping("{id}/unsubscribes")
-    public void unSubscribeUser(@PathVariable(name = "id")Long id,User user){
+    public void unSubscribeUser(@PathVariable(name = "id")Long id,@AuthenticationPrincipal User user){
          userService.unSubscribeByUser(user, id);
     }
     @GetMapping("{id}/subscribers")
     public Set<User> subscribersByUser(@PathVariable(name = "id")Long id) {
         return userService.getAllSubscribers(id);
     }
+
     @GetMapping("{id}/subscriptions")
     public Set<User> subscriptionsByUser(@PathVariable(name = "id")Long id) {
         return userService.getAllSubscription(id);

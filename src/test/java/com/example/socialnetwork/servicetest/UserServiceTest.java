@@ -120,6 +120,7 @@ public class UserServiceTest {
         assertThat(userService.getAllUsers()).hasSize(3);
         verify(userRepo, times(1)).findAll();
     }
+
     @Test
     public void testUpdateUser()  {
         User expectedUser = getDefaultUser();

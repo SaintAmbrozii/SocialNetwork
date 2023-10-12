@@ -1,9 +1,10 @@
 package com.example.socialnetwork.controller;
 
+import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.payload.LoginRequest;
 import com.example.socialnetwork.payload.TokenRefreshRequest;
 import com.example.socialnetwork.payload.TokenResponse;
-import com.example.socialnetwork.security.JwtTokenGenerator;
+import com.example.socialnetwork.payload.UserDTO;
 import com.example.socialnetwork.service.AuthService;
 import com.example.socialnetwork.service.UserService;
 import jakarta.security.auth.message.AuthException;
@@ -21,12 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
+        this.userService = userService;
     }
     @PostMapping(value = "login",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TokenResponse> authenticate(
@@ -43,6 +46,10 @@ public class AuthController {
     public ResponseEntity<TokenResponse> getNewRefreshToken(@RequestBody TokenRefreshRequest request) throws AuthException {
         final TokenResponse token = authService.getRefreshToken(request.getRefreshToken());
         return ResponseEntity.ok(token);
+    }
+    @PostMapping("register")
+    public ResponseEntity<User> register(@RequestBody User user) {
+        return ResponseEntity.ok(userService.createUser(user));
     }
 
 }

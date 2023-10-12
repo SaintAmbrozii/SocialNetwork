@@ -24,8 +24,7 @@ import java.io.IOException;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private static final String AUTHORIZATION = "Authorization";
-    protected final Log logger = LogFactory.getLog(getClass());
+
 
     private final JwtTokenGenerator jwtTokenGenerator;
     private final UserDetailService userService;
@@ -35,39 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         this.userService = userService;
     }
 
- //   @Override
- //   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
- //       String token = getTokenFromRequest(request);
- //       String userName = null;
- //       if (token != null && token.startsWith("Bearer ")) {
-       //     userName = jwtTokenGenerator.extractUsername(token);
-//           userName = jwtTokenGenerator.getUsername(userName);
- //           logger.info("AuthToken: "+ token);
-  //      }
 
-  //      if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-   //         UserDetails userDetails = userService.loadUserByUsername(userName);
-    //        logger.info("UserName: "+userName);
-                    // getUserDetails(token);
-                    //userService.loadUserByUsername(userName);
-
-    //        if (jwtTokenGenerator.validateToken(token, userDetails)) {
-
-    //                UsernamePasswordAuthenticationToken authenticationToken =
-    //                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-    //            authenticationToken
-   //                     .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-    //         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-    //       }
-    //        else {
-   //             logger.error("Something is wrong with Token.");
-   //         }
-   //     }
-  //      filterChain.doFilter(request, response);
-
-
-  //  }
 
     @Override
     protected void doFilterInternal(

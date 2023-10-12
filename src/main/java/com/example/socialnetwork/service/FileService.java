@@ -17,12 +17,12 @@ import java.util.UUID;
 @Service
 public class FileService {
 
-    private final Path fileStorageLocation;
-    private final ImageRepo imageRepo;
+    private static Path fileStorageLocation;
+    private static ImageRepo imageRepo;
 
-    @Autowired
-    public FileService(Environment env, ImageRepo imageRepo) {
-        this.fileStorageLocation = Paths.get(env.getProperty("app.file.upload-dir", "./upload"))
+
+    public  FileService(Environment env, ImageRepo imageRepo) {
+        fileStorageLocation = Paths.get(env.getProperty("app.file.upload-dir", "./upload"))
                 .toAbsolutePath().normalize();
         this.imageRepo = imageRepo;
         try {
@@ -44,7 +44,7 @@ public class FileService {
     }
 
 
-    private String getFileData(MultipartFile file) {
+    private static String getFileData(MultipartFile file) {
         String uuidFile = UUID.randomUUID().toString();
         String resultFilename = uuidFile + "." + file.getOriginalFilename();
         String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -54,9 +54,9 @@ public class FileService {
         return uri;
 
     }
-    public void deleteFile(Long id) throws IOException {
+    public static void deleteFile(Long id) throws IOException {
         Image image = imageRepo.getReferenceById(id);
-        Path filepath = this.fileStorageLocation.resolve(image.getName());
+        Path filepath = fileStorageLocation.resolve(image.getName());
         FileSystemUtils.deleteRecursively(filepath);
 
     }

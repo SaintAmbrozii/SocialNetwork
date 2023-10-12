@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
@@ -24,22 +25,17 @@ public class Post {
     @Column(name = "text",length = 4096)
     private String text;
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Post)) return false;
-        Post post = (Post) o;
-        return Objects.equals(id, post.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
     @Column(name = "username")
     private String username;
+
+    @Column(name = "lastname")
+    private String lastname;
+    @Column(name = "userId")
+    private Long userId;
+    @Column(name = "dateTime")
+    private LocalDateTime dateTime;
+
+
 
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -52,10 +48,6 @@ public class Post {
     private List<Comment> comments = new ArrayList<>();
 
 
-
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private User author;
 
 
     private Integer likes = 0;
@@ -81,6 +73,20 @@ public class Post {
     }
     public void addImage(Image image) {
         images.add(image);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Post)) return false;
+        Post post = (Post) o;
+        return Objects.equals(id, post.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 

@@ -5,15 +5,19 @@ import com.example.socialnetwork.exception.IgnoredSocialNetworkException;
 import com.example.socialnetwork.payload.PostDTO;
 import com.example.socialnetwork.repo.ImageRepo;
 import com.example.socialnetwork.repo.PostRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PostService {
@@ -34,21 +38,27 @@ public class PostService {
         this.fileService = fileService;
         this.imageRepo = imageRepo;
     }
-    public Post addPost(Principal principal,PostDTO postDTO) {
+    public Post addPost(User user,PostDTO postDTO) {
         Post post = new Post();
-        post.setText(post.getText());
+        post.setText(postDTO.getText());
+        post.setUsername(user.getName());
+        post.setLastname(user.getLastname());
+        post.setUserId(user.getId());
         return postRepo.save(post);
     }
-    public Post postWithImg(String text,MultipartFile[] files,User user) {
+    @Transactional
+    public Post postWithImg(PostDTO postDTO,List<MultipartFile> files,User user) {
             Post post = new Post();
-            post.setText(text);
-            post.setAuthor(user);
+            post.setText(postDTO.getText());
             post.setUsername(user.getName());
-        if (files != null) {
-            List<Image> images = Arrays.asList(files).stream()
+            post.setUserId(user.getId());
+            post.setLastname(user.getLastname());
+            post.setDateTime(LocalDateTime.now());
+        if (!files.isEmpty()) {
+            List<Image> images = Stream.of(files)
                     .map(file -> {
-                        String name =  fileService.saveFile(file);
-                        String uri = getFileData(file);
+                        String name =  fileService.saveFile((MultipartFile) file);
+                        String uri = getFileData((MultipartFile) file);
                         return imageRepo.save(Image.builder().uri(uri).name(name).build());
                     }).collect(Collectors.toList());
 
@@ -58,23 +68,30 @@ public class PostService {
     }
 
 
-    public void updPost(Long id, String text, MultipartFile[] files)  {
+    @Transactional
+    public PostDTO updPost(Long id, PostDTO postDTO, List<MultipartFile> files,User user)  {
             Post inDB = postRepo.findById(id).orElseThrow();
-            inDB.setText(text);
-            inDB.getImages().removeAll(inDB.getImages());
-            if (files!=null) {
-                List<Image> images = Arrays.asList(files).stream()
-                        .map(file -> {
-                            String name =  fileService.saveFile(file);
-                            String uri = getFileData(file);
-                            return imageRepo.save(Image.builder().uri(uri).name(name).build());
-                        }).collect(Collectors.toList());
+            if (user!=null && user.isEnabled()) {
+                inDB.setText(postDTO.getText());
+                inDB.setDateTime(LocalDateTime.now());
+                if (!files.isEmpty()) {
+                    inDB.getImages().removeAll(inDB.getImages());
+                    List<Image> images = Stream.of(files)
+                            .map(file -> {
+                                String name =  fileService.saveFile((MultipartFile) file);
+                                String uri = getFileData((MultipartFile) file);
+                                return imageRepo.save(Image.builder().uri(uri).name(name).build());
+                            }).collect(Collectors.toList());
 
-                inDB.getImages().addAll(images);
+                    inDB.getImages().addAll(images);
+                }
+
+                postRepo.save(inDB);
+
             }
-            postRepo.save(inDB);
-
+            return toPostDto(inDB);
     }
+    @Transactional
     public void deletePost(Post post) {
         postRepo.delete(post);
     }
@@ -86,6 +103,11 @@ public class PostService {
        return postRepo.findById(id).orElseThrow();
     }
 
+    public List<PostDTO> getAllByUserId(User user) {
+        return postRepo.findPostByUserId(user.getId()).stream().map(this::toPostDto).collect(Collectors.toList());
+    }
+
+    @Transactional
     public Post react( Long id, User user, Reactions reactions) {
         Post inDB = postRepo.findById(id).orElseThrow();
         doReaction(inDB,user,reactions);
@@ -136,7 +158,9 @@ public class PostService {
 
     private PostDTO toPostDto(Post post) {
         PostDTO postDTO = new PostDTO();
-        postDTO.setUsername(String.valueOf(post.getAuthor()));
+        postDTO.setUsername(post.getUsername());
+        postDTO.setLastname(post.getLastname());
+        postDTO.setUserId(postDTO.getUserId());
         postDTO.setId(post.getId());
         postDTO.setText(post.getText());
         postDTO.setImages(post.getImages());

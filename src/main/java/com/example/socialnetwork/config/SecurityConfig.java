@@ -47,9 +47,6 @@ import java.io.IOException;
 public class SecurityConfig {
 
 
-
-
-
     @Autowired
     RestAuthentificationEntryPoint authentificationEntryPoint;
 
@@ -61,15 +58,7 @@ public class SecurityConfig {
     @Autowired
     private JwtTokenGenerator jwtTokenGenerator;
 
-   // @Autowired
-  //  private JwtTokenFilter jwtTokenFilter;
 
-
-  //  @Bean
- //   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
- //           throws Exception {
- //       return authenticationConfiguration.getAuthenticationManager();
- //   }
 
        @Bean
        public AuthenticationProvider authenticationProvider() {
@@ -79,11 +68,7 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    //   @Bean
-    //   public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-    //       return http.getSharedObject(AuthenticationManagerBuilder.class).authenticationProvider(authenticationProvider())
-    //              .build();
-    //   }
+
      @Bean
    public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder passwordEncoder,
                                              UserDetailService userDetailService) throws Exception {
@@ -101,6 +86,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/users/**").authenticated()
+                .requestMatchers("/api/posts/**").authenticated()
+                .requestMatchers("/api/comments/**").authenticated()
+                .requestMatchers("/api/images/**").authenticated()
                 .requestMatchers(AUTH_WHITELIST).permitAll()
                 .requestMatchers("/js/**").permitAll()
                 .requestMatchers("/download/**").permitAll()
@@ -111,6 +99,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(new JwtTokenFilter(jwtTokenGenerator,userService), UsernamePasswordAuthenticationFilter.class);
+
 
 
         return http.build();

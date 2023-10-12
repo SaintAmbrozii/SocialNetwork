@@ -2,6 +2,8 @@ package com.example.socialnetwork.servicetest;
 
 import com.example.socialnetwork.Const;
 import com.example.socialnetwork.domain.*;
+import com.example.socialnetwork.exception.NotFoundSocialNetworkException;
+import com.example.socialnetwork.payload.PostDTO;
 import com.example.socialnetwork.repo.PostRepo;
 import com.example.socialnetwork.service.FileService;
 import com.example.socialnetwork.service.PostService;
@@ -16,30 +18,42 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Supplier;
 
 import static com.example.socialnetwork.Const.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 public class PostServiceTest {
 
     @Mock
-     PostRepo postRepository;
-    @Mock
-    FileService fileService;
+    PostRepo postRepository;
 
 
-    @InjectMocks
-    UserService userService;
+
+
+
+
+
 
     @InjectMocks
     PostService postService;
 
-
+    private static final Long groupId = 2L;
+    private static final Long userId = 1L;
     private static final Long postId = 1L;
+    private static final String username = "User1";
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+
+    }
+
 
     public static User getDefaultUser() {
         var result = User.builder().id(ID).name(NAME).lastname(SECOND_NAME).
@@ -49,17 +63,102 @@ public class PostServiceTest {
         return result;
     }
 
+    @Test
+    public void shouldFindAndReturnOnePost() {
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        Post expectedPost = Post.builder().id(postId)
+                .userId(userId)
+                .images(new ArrayList<>()).
+                build();
+
+        when(postRepository.findById(postId)).thenReturn(Optional.of(expectedPost));
+
+        Post actualPost = postService.findById(postId);
+
+        assertThat(actualPost).usingRecursiveComparison().isEqualTo(expectedPost);
+        verify(postRepository, times(1)).findById(postId);
+        verifyNoMoreInteractions(postRepository);
+    }
+
+    @Test
+    public void testCreatePost() {
+
+        Post post = Post.builder().id(postId)
+                .userId(userId)
+                .images(new ArrayList<>()).
+                build();
 
 
+        when(postRepository.save(any(Post.class))).thenReturn(post);
 
+        PostDTO postDTO = PostDTO.builder()
+                .userId(userId)
+                .images(new ArrayList<>())
+                .build();
+
+        Long actualId = postService.addPost(getDefaultUser(),postDTO).getId();
+
+        assertEquals(postId, actualId);
+        verify(postRepository, times(1)).save(any(Post.class));
+        verifyNoMoreInteractions(postRepository);
+    }
+
+    @Test
+    public void testGetAllPost() {
+        BDDMockito.given(postRepository.findAll()).willReturn(List.of(new Post(), new Post(), new Post()));
+
+        assertThat(postService.getPosts()).hasSize(3);
+        verify(postRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void testCreatePostWithImages()  {
+
+        Post post = Post.builder().id(postId)
+                .userId(getDefaultUser().getId())
+                .images(new ArrayList<>()).
+                build();
+
+        when(postRepository.save(any(Post.class))).thenReturn(post);
+
+        PostDTO postDTO = PostDTO.builder()
+                .userId(getDefaultUser().getId())
+                .images(new ArrayList<>())
+                .build();
+
+        Long actualId = postService.postWithImg(postDTO,anyList(),getDefaultUser()).getId();
+
+        assertEquals(postId, actualId);
+        verify(postRepository, times(1)).save(any(Post.class));
+        verifyNoMoreInteractions(postRepository);
+    }
+    @Test
+    public void testUpdatePost()  {
+        Post foundPost = Post.builder().id(postId)
+                .userId(getDefaultUser().getId())
+                .images(new ArrayList<>()).
+                build();
+
+        PostDTO expectedPostDTO = PostDTO.builder()
+                .id(postId)
+                .userId(getDefaultUser().getId())
+                .images(new ArrayList<>())
+                .build();
+
+
+        when(postRepository.findById(postId)).thenReturn(Optional.of(foundPost));
+
+        PostDTO actualPost = postService.updPost(postId,expectedPostDTO, anyList(), getDefaultUser());
+
+        assertThat(actualPost).usingRecursiveComparison().isEqualTo(expectedPostDTO);
+        verify(postRepository, times(1)).findById(postId);
+        verify(postRepository, times(1)).save(foundPost);
+        verifyNoMoreInteractions(postRepository);
     }
 
 
-    public static Post getDefaultPost()  {
+
+    public static Post getDefaultPost() {
         var result = new Post();
         result.setId(ID);
         result.setText("text");
@@ -69,35 +168,19 @@ public class PostServiceTest {
             result.minusDislikes();
 
         var comment = new Comment();
-        comment.setAuthor(getDefaultUser());
         comment.setPost(result);
 
         result.getComments().add(comment);
         return result;
     }
-    public static   Post getDefaultPost2() {
 
-        var result = new Post();
-        result.setId(ID);
-        result.setText("text");
-        for (int i = 0; i < LIKES; i++)
-            result.plusDislikes();
-        for (int i = 0; i < DISLIKES; i++)
-            result.minusDislikes();
-
-        var comment = new Comment();
-        comment.setAuthor(getDefaultUser());
-        comment.setPost(result);
-
-        result.getComments().add(comment);
-        return result;
-    }
     @Test
     public void incrementLikes() throws IOException {
         var post = getDefaultPost();
         post.plusLikes();
         assertEquals(1, post.getLikes().intValue());
     }
+
     @Test
     public void incrementDislikes() throws IOException {
         var post = getDefaultPost();
@@ -106,138 +189,43 @@ public class PostServiceTest {
     }
 
     @Test
-    public void testDeletePost()  {
+    public void testDeletePost() {
         var user = getDefaultUser();
         Post post = Post.builder()
                 .id(postId)
+                .userId(getDefaultUser().getId())
                 .text("text")
-                .author(user)
                 .images(new ArrayList<>())
                 .comments(new ArrayList<>()).build();
 
-        when(postRepository.findById(postId)).thenReturn(Optional.of(post));
 
-        postService.deletePost(post);
+        assertEquals(user.getId(),post.getUserId());
+        postRepository.delete(post);
+        verify(postRepository, times(1)).delete(post);
 
     }
-
- //   @Test
- //   public void addPost() throws IOException {
-
-  //      User user = getDefaultUser();
-
-   //    MultipartFile[] files = IMAGE_MOCK_MULTIPART_FILES;
-   //    Image image = Const.image;
-   //     String text =new String("text");
-
-   //     Post post = new Post();
-   //     post.setId(postId);
-   //     post.getImages().add(image);
-   //     post.setText(text);
-    //    post.setAuthor(user);
-
-     //   when(postRepository.save(post)).thenReturn(post);
-     //   postService.postWithImg(text,files);
-     //   assertEquals(postId,post.getId());
-    //    assertEquals(text,post.getText());
-    //    assertEquals(user,post.getAuthor());
-
-  //  }
-
-  //  @Test
-  //  public void testUpdatePost() throws IOException {
-  //     var user = getDefaultUser();
-  //      MultipartFile [] files = IMAGE_MOCK_MULTIPART_FILES;
-  //      Long id = postId;
-  //      String text =new String(TEXT);
-  //      Post post = new Post();
-  //      post.addImage(image);
-  //      post.setText(text);
-  //      post.setAuthor(user);
-
-  //     Post updPost = new Post();
-   //     updPost.addImage(image);
-   //     updPost.setText(text);
-   //    updPost.setAuthor(user);
-
-  //      when(postRepository.findById(postId)).thenReturn(Optional.of(post));
-
-
-  //      postService.updPost(id,text,files);
-  //      assertThat(post).usingRecursiveComparison().isEqualTo(updPost);
-   //     when(postRepository.save(post)).thenReturn(post);
-   //     verifyNoMoreInteractions(postRepository);
-
- //   }
-
-
 
     @Test
-    public void testGetAllPosts() {
-        BDDMockito.given(postRepository.findAll()).willReturn(List.of(new Post(),new Post(),new Post()));
-        assertThat(postRepository.findAll()).hasSize(3);
-        verify(postRepository, times(1)).findAll();
-    }
+    public void testUpdatePostThrowsResourceNotFoundException()  {
+        Post foundPost = Post.builder().id(postId)
+                .userId(getDefaultUser().getId())
+                .images(new ArrayList<>()).
+                build();
 
-
-    @org.junit.jupiter.api.Test
-    public void getById() {
-        Post post = Post.builder()
+        PostDTO expectedPostDTO = PostDTO.builder()
                 .id(postId)
-                .text("text").build();
+                .userId(getDefaultUser().getId())
+                .images(new ArrayList<>())
+                .build();
 
-        when(postRepository.findById(postId)).thenReturn(Optional.of(post));
-        postService.findById(post.getId());
-        assertNotNull(post);
-        assertEquals(postId,post.getId());
+        given(postRepository.findById(foundPost.getId())).willAnswer(invocation -> {
+            throw new NotFoundSocialNetworkException("post with id " + postId + " does not exists");
+        });
 
-        verifyNoMoreInteractions(postRepository);
+        assertThrows(NotFoundSocialNetworkException.class, () -> {
+            postService.updPost(postId, expectedPostDTO,anyList(),getDefaultUser());
+        });
     }
-
-
-    private Post reactionTest(Reactions reactions,  int LikesCount,
-                               int DislikesCount, boolean beforeAddLikedPostToUser) throws IOException {
-        var processedPost = getDefaultPost();
-        var processedUser = getDefaultUser();
-
-
-        if (beforeAddLikedPostToUser) {
-            processedUser.addLikedPost(processedPost);
-            processedUser.addDislikedPost(processedPost);
-        }
-
-        when(postRepository.findById(any())).thenReturn(Optional.of(processedPost));
-
-        when(postRepository.save(any())).thenReturn(processedPost);
-
-
-        postService.react(processedPost.getId(),processedUser,reactions);
-
-
-        verify(postRepository, times(1)).save(processedPost);
-        verify(userService, times(1)).update(processedUser);
-
-        assertEquals(LikesCount, processedPost.getLikes().intValue());
-        assertEquals(DislikesCount, processedPost.getDisLikes().intValue());
-
-        return processedPost;
-    }
-    @Test
-    public void likeSuccessful() throws IOException {
-       reactionTest(Reactions.LIKE,LIKES+1,DISLIKES,false);
-    }
-
-
-    private String getFileData(MultipartFile file) {
-        String uuidFile = UUID.randomUUID().toString();
-        String resultFilename = uuidFile + "." + file.getOriginalFilename();
-        String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/download/")
-                .path(resultFilename)
-                .toUriString();
-        return uri;
-    }
-
 
 
 
