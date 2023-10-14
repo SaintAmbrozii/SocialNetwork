@@ -25,9 +25,8 @@ public class Comment {
 
     @Column(name = "text",length = 2048)
     private String text;
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @Column(name = "postId")
+    private Long postId;
 
     @Column(name = "userId")
     private Long userId;

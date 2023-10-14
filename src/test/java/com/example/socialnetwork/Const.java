@@ -16,7 +16,7 @@ public class Const {
     public static final String TEXT = "text";
     public static final String LOCATION = "location";
     public static final String CONTENT = "content";
-    public static final String PASSWORD = "password";
+    public static final String PASSWORD = "123456";
     public static final String EMAIL = "email@email.com";
     public static final String PHONE = "+79132821588";
     public static final Boolean EMAIL_CONFIRMED = true;

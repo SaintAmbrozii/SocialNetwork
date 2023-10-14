@@ -33,20 +33,11 @@ public class PostServiceTest {
     @Mock
     PostRepo postRepository;
 
-
-
-
-
-
-
-
     @InjectMocks
     PostService postService;
 
-    private static final Long groupId = 2L;
     private static final Long userId = 1L;
     private static final Long postId = 1L;
-    private static final String username = "User1";
 
     @BeforeEach
     void setUp() {
@@ -167,10 +158,8 @@ public class PostServiceTest {
         for (int i = 0; i < DISLIKES; i++)
             result.minusDislikes();
 
-        var comment = new Comment();
-        comment.setPost(result);
 
-        result.getComments().add(comment);
+
         return result;
     }
 
@@ -195,8 +184,8 @@ public class PostServiceTest {
                 .id(postId)
                 .userId(getDefaultUser().getId())
                 .text("text")
-                .images(new ArrayList<>())
-                .comments(new ArrayList<>()).build();
+                .images(new ArrayList<>()).build();
+
 
 
         assertEquals(user.getId(),post.getUserId());

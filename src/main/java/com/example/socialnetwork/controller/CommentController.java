@@ -21,19 +21,19 @@ public class CommentController {
         this.commentService = commentService;
     }
     @PostMapping("posts/{id}/comments")
-    public Comment create(@PathVariable(name = "id")Long postId, @RequestBody Comment comment, @AuthenticationPrincipal User user) {
-        return commentService.addComment(postId, comment,user);
+    public Comment create(@PathVariable(name = "id")Long postId, @RequestBody CommentDTO commentDTO, @AuthenticationPrincipal User user) {
+        return commentService.addComment(postId, commentDTO,user);
     }
     @DeleteMapping("comments/{id}")
     public void delete(@PathVariable(name = "id") Comment comment,@AuthenticationPrincipal User user) {
         commentService.deleteComment(comment,user);
     }
     @PutMapping("comments/{id}")
-    public Comment updComment( @PathVariable(name = "id")Long commentId, @RequestBody Comment comment,@AuthenticationPrincipal User user) {
-        return commentService.updComment(commentId, comment,user);
+    public Comment updComment( @PathVariable(name = "id")Long commentId, @RequestBody CommentDTO commentDTO,@AuthenticationPrincipal User user) {
+        return commentService.updComment(commentId, commentDTO,user);
     }
     @GetMapping("posts/{id}/comments")
-    public List<Comment> getByPost(@PathVariable(name = "id")Long id) {
+    public List<CommentDTO> getByPost(@PathVariable(name = "id")Long id) {
         return commentService.getCommentsByPost(id);
     }
     @GetMapping("comments")

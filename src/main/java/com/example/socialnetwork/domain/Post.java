@@ -42,11 +42,6 @@ public class Post {
     @JoinTable(name = "post_images",joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "image_id"))
     private List<Image> images = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
-    @JoinTable(name = "post_comments",joinColumns = @JoinColumn(name = "post_id"),
-    inverseJoinColumns = @JoinColumn(name = "comment_id"))
-    private List<Comment> comments = new ArrayList<>();
-
 
 
 

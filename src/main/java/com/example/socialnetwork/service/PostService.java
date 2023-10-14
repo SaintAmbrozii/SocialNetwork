@@ -6,6 +6,7 @@ import com.example.socialnetwork.payload.PostDTO;
 import com.example.socialnetwork.repo.ImageRepo;
 import com.example.socialnetwork.repo.PostRepo;
 import jakarta.transaction.Transactional;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

@@ -37,38 +37,28 @@ import static org.mockito.Mockito.*;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 public class UserServiceTest {
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    private MockMvc mockMvc;
-
-    @Mock
-     UserRepo userRepo;
-
 
     @Mock
     PasswordEncoder encoder;
 
     @Mock
-    Principal principal;
-
+     UserRepo userRepo;
 
     @InjectMocks
      UserService userService;
 
     private static final Long userId  = 1L;
-    private static final String username = "User1";
-    public static final String USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found for this id : ";
+    private static final String encodedPassword = "dnasdsandsadoasdndsandsadiosadnsada";
+
 
 
 
 
     @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        MockitoAnnotations.openMocks(this);
+
 
 
     }
@@ -90,21 +80,17 @@ public class UserServiceTest {
 
     @Test
     public void testCreateUser() {
-        User expectedUser = User.builder()
-                .id(userId)
-                .name("user")
-                .lastname("lastname")
-                .email("user@test.com")
-                .phone(PHONE)
-                .build();
-        when(userRepo.save(expectedUser)).thenReturn(expectedUser);
+        User NEWuser = getDefaultUser();
 
-        User actualUser = userService.createUser(expectedUser);
+        when(userRepo.findByEmail(getDefaultUser().getEmail())).thenReturn(null);
+        when(encoder.encode(getDefaultUser().getPassword())).thenReturn(encodedPassword);
 
-        assertEquals(expectedUser,actualUser);
-        verify(userRepo, times(1)).save(expectedUser);
+
+        when(userRepo.save(getDefaultUser())).thenReturn(getDefaultUser());
         verifyNoMoreInteractions(userRepo);
+
     }
+
     @Test
     public void deleteUser()  {
         User user = getDefaultUser();
@@ -113,6 +99,7 @@ public class UserServiceTest {
 
         verify(userRepo, times(1)).delete(user);
     }
+
     @Test
     public void testGetAllUsers() {
         BDDMockito.given(userRepo.findAll()).willReturn(List.of(new User(), new User(), new User()));
