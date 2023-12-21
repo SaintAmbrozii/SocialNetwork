@@ -6,14 +6,11 @@ import com.example.socialnetwork.payload.PostDTO;
 import com.example.socialnetwork.repo.ImageRepo;
 import com.example.socialnetwork.repo.PostRepo;
 import jakarta.transaction.Transactional;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -32,34 +29,36 @@ public class PostService {
 
 
 
+
+
     public PostService(PostRepo postRepo, UserService userService,
                        FileService fileService, ImageRepo imageRepo) {
         this.postRepo = postRepo;
         this.userService = userService;
         this.fileService = fileService;
         this.imageRepo = imageRepo;
+
     }
     public Post addPost(User user,PostDTO postDTO) {
         Post post = new Post();
         post.setText(postDTO.getText());
         post.setUsername(user.getName());
-        post.setLastname(user.getLastname());
+
         post.setUserId(user.getId());
         return postRepo.save(post);
     }
     @Transactional
-    public Post postWithImg(PostDTO postDTO,List<MultipartFile> files,User user) {
+    public Post postWithImg(PostDTO postDTO,MultipartFile [] files,User user) {
             Post post = new Post();
             post.setText(postDTO.getText());
             post.setUsername(user.getName());
             post.setUserId(user.getId());
-            post.setLastname(user.getLastname());
             post.setDateTime(LocalDateTime.now());
-        if (!files.isEmpty()) {
-            List<Image> images = Stream.of(files)
+        if (!(files == null)) {
+            List<Image> images = Arrays.stream(files)
                     .map(file -> {
-                        String name =  fileService.saveFile((MultipartFile) file);
-                        String uri = getFileData((MultipartFile) file);
+                        String name =  fileService.saveFile(file);
+                        String uri = getFileData(file);
                         return imageRepo.save(Image.builder().uri(uri).name(name).build());
                     }).collect(Collectors.toList());
 
@@ -72,7 +71,7 @@ public class PostService {
     @Transactional
     public PostDTO updPost(Long id, PostDTO postDTO, List<MultipartFile> files,User user)  {
             Post inDB = postRepo.findById(id).orElseThrow();
-            if (user!=null && user.isEnabled()) {
+            if (user!=null) {
                 inDB.setText(postDTO.getText());
                 inDB.setDateTime(LocalDateTime.now());
                 if (!files.isEmpty()) {

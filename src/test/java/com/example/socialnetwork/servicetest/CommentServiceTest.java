@@ -60,10 +60,10 @@ public class CommentServiceTest {
 
     public static User getDefaultUser() {
         var result = User.builder().id(ID).name(NAME).lastname(SECOND_NAME).
-                password(PASSWORD).email(EMAIL).phone(PHONE).build();
-        result.setRoles(Collections.singleton(Role.USER));
+               password(PASSWORD).email(EMAIL).phone(PHONE).build();
+    //    result.setRoles(Collections.singleton(Role.USER));
 
-        return result;
+       return result;
     }
 
     public static Comment getDefaultComment() {

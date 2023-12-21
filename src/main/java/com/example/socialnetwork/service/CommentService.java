@@ -40,16 +40,16 @@ public class CommentService {
             return commentRepo.save(comment);
     }
     public void deleteComment(Comment comment,User currentUser) {
-        if (currentUser.isEnabled()) {
+
             commentRepo.delete(comment);
-        }
+
     }
     public Comment updComment(Long commentId, CommentDTO commentDTO,User currentUser) {
        Comment inDb = commentRepo.findById(commentId).orElseThrow();
-       if (currentUser.isEnabled()) {
+
            inDb.setText(commentDTO.getText());
            inDb.setDateTime(LocalDateTime.now());
-       }
+
        return commentRepo.save(inDb);
     }
     public Comment findById(Long id) {

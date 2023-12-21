@@ -2,12 +2,14 @@ package com.example.socialnetwork.payload;
 
 import lombok.*;
 
-@Builder
-@Getter
-@Setter
+@Data
 public class TokenResponse {
 
-    private String token;
-    private String refreshToken;
-    private final String type = "Bearer";
+    private String accessToken;
+    private String tokenType = "Bearer";
+
+
+    public TokenResponse(String accessToken) {
+        this.accessToken=accessToken;
+    }
 }

@@ -14,14 +14,15 @@ import java.util.Set;
 
 @Repository
 public interface UserRepo extends JpaRepository<User,Long> {
-    Optional<User> findByEmail(String email);
+
+
+    Optional<User> findUserByEmail(String email);
 
     Set<User> findBySubscribers(User user);
     Set<User> findBySubscriptions(User user);
     Optional<User> findByName(String name);
 
     Slice<User> findBySubscriptions(User user, Pageable pageable);
-
     Slice<User> findBySubscribers(User user,Pageable pageable);
 
     Integer countBySubscribers(User user);

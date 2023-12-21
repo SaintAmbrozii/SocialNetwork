@@ -5,7 +5,7 @@ import com.example.socialnetwork.domain.Post;
 import com.example.socialnetwork.domain.Reactions;
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.payload.PostDTO;
-import com.example.socialnetwork.security.JwtTokenGenerator;
+
 import com.example.socialnetwork.service.PostService;
 import com.example.socialnetwork.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,12 +33,12 @@ public class PostController {
 
 
     @PostMapping(value = "posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Post addPost(@RequestBody PostDTO postDTO,
-                        @RequestPart(name = "file",required = false) List<MultipartFile>files,@AuthenticationPrincipal User user)  {
+    public Post addPost(@RequestPart(name = "text",required = false) PostDTO postDTO,
+                        @RequestPart(name = "file",required = false) MultipartFile [] files,@AuthenticationPrincipal User user)  {
         return postService.postWithImg(postDTO,files,user);
     }
-  //  @PostMapping(value = "posts")
- //   public Post createPost(@RequestBody PostDTO postDTO,@AuthenticationPrincipal User user) {
+ //   @PostMapping(value = "posts")
+  //  public Post createPost(@RequestBody PostDTO postDTO,@AuthenticationPrincipal User user) {
  //       return postService.addPost(user, postDTO);
  //   }
     @GetMapping("posts/getAllByUser")
@@ -48,7 +48,7 @@ public class PostController {
 
 
     @PutMapping(value = "posts/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public PostDTO updMessage(@PathVariable(name = "id")Long id, @RequestBody PostDTO postDTO,
+    public PostDTO updMessage(@PathVariable(name = "id")Long id, @RequestPart(name = "text",required = false) PostDTO postDTO,
                            @RequestPart(name = "file",required = false)List<MultipartFile> files,@AuthenticationPrincipal User user) {
         return postService.updPost(id, postDTO, files,user);
     }
