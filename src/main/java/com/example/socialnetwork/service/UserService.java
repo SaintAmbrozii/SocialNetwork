@@ -1,21 +1,17 @@
 package com.example.socialnetwork.service;
 
-import com.example.socialnetwork.domain.Role;
-
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.exception.IgnoredSocialNetworkException;
 import com.example.socialnetwork.exception.NotFoundException;
-import com.example.socialnetwork.exception.UserIsExist;
 import com.example.socialnetwork.payload.UserDTO;
 import com.example.socialnetwork.repo.UserRepo;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,30 +30,30 @@ public class UserService {
     }
 
 
-    public void deleteUser(User user) {
-        userRepo.delete(user);
+    public void deleteUser(Long id) {
+        userRepo.deleteById(id);
     }
 
- //   public List<UserDTO> getAllUsers () {
- //       return userRepo.findAll().stream().map(this::doDto).collect(Collectors.toList());
- //   }
-
-    public List<User> getAll() {
-        return userRepo.findAll();
+    public List<UserDTO> getAllUsers () {
+        return userRepo.findAll().stream().map(this::doDto).collect(Collectors.toList());
     }
+
 
     public Optional<User> findByEmail (String email) {
         return userRepo.findUserByEmail(email);
     }
 
 
-
     public Optional<User> findByUsername(String name) {
         return userRepo.findByName(name);
     }
 
-    public User update(User user) {
-        return userRepo.save(user);
+    public User update(Long id, UserPrincipal userPrincipal) {
+        User user = userRepo.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+        if (Objects.equals(id, userPrincipal.getId())) {
+            userRepo.save(user);
+        }
+       return user;
     }
 
     public User findById(Long id) {
@@ -103,8 +99,16 @@ public class UserService {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
         dto.setName(user.getName());
+        dto.setLastname(user.getLastname());
         dto.setPassword(user.getPassword());
         dto.setEmail(user.getEmail());
+        dto.setPhone(user.getPhone());
+        dto.setGender(user.getGender());
+        dto.setAddress(user.getAddress());
+        dto.setEnabled(user.getEnabled());
+        dto.setPicture(user.getPicture());
+        dto.setLocale(user.getLocale());
+        dto.setAuthority(user.getAuthority());
         return dto;
 
     }

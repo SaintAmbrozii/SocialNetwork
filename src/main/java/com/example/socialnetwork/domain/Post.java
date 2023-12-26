@@ -22,7 +22,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
-    @Column(name = "text",length = 4096)
+    @Column(name = "text",length = 16276)
     private String text;
 
     @Column(name = "username")
@@ -34,6 +34,7 @@ public class Post {
     private Long userId;
     @Column(name = "dateTime")
     private LocalDateTime dateTime;
+
 
 
 

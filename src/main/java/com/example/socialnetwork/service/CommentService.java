@@ -3,14 +3,18 @@ package com.example.socialnetwork.service;
 import com.example.socialnetwork.domain.Comment;
 import com.example.socialnetwork.domain.Post;
 import com.example.socialnetwork.domain.User;
-import com.example.socialnetwork.exception.NotFoundSocialNetworkException;
+import com.example.socialnetwork.exception.NotFoundException;
 import com.example.socialnetwork.payload.CommentDTO;
 import com.example.socialnetwork.repo.CommentRepo;
 import com.example.socialnetwork.repo.PostRepo;
+import com.example.socialnetwork.repo.UserRepo;
+import com.example.socialnetwork.security.oauth.UserPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,16 +22,19 @@ public class CommentService {
 
     private final CommentRepo commentRepo;
     private final PostRepo postRepo;
+    private final UserRepo userRepo;
 
 
-    public CommentService(CommentRepo commentRepo, PostRepo postRepo) {
+    public CommentService(CommentRepo commentRepo, PostRepo postRepo, UserRepo userRepo) {
         this.commentRepo = commentRepo;
         this.postRepo = postRepo;
+        this.userRepo = userRepo;
     }
-    public Comment addComment(Long postId, CommentDTO commentDTO,User currentUser) {
-        if (currentUser == null)
+    public Comment addComment(Long postId, CommentDTO commentDTO, UserPrincipal currentUser) {
+        Optional<User> user = userRepo.findById(currentUser.getId());
+        if (Objects.equals(currentUser.getId(), user.get().getId()))
         {
-            throw new NotFoundSocialNetworkException("нет данного пользователя");
+            throw new NotFoundException("нет данного пользователя");
         }
           Post post = postRepo.findById(postId).orElseThrow();
            Comment comment = Comment.builder().postId(post.getId())
@@ -39,16 +46,23 @@ public class CommentService {
                    .dateTime(LocalDateTime.now()).build();
             return commentRepo.save(comment);
     }
-    public void deleteComment(Comment comment,User currentUser) {
-
-            commentRepo.delete(comment);
+    public void deleteComment(Comment comment,UserPrincipal currentUser) {
+        Optional<User> user = userRepo.findById(currentUser.getId());
+        if (Objects.equals(currentUser.getId(), user.get().getId()))
+        {
+            throw new NotFoundException("нет данного пользователя");
+        }
+          commentRepo.delete(comment);
 
     }
-    public Comment updComment(Long commentId, CommentDTO commentDTO,User currentUser) {
-       Comment inDb = commentRepo.findById(commentId).orElseThrow();
-
-           inDb.setText(commentDTO.getText());
-           inDb.setDateTime(LocalDateTime.now());
+    public Comment updComment(Long commentId, CommentDTO commentDTO,UserPrincipal currentUser) {
+        Optional<User> user = userRepo.findById(currentUser.getId());
+        if (Objects.equals(currentUser.getId(), user.get().getId()))
+        {
+            throw new NotFoundException("нет данного пользователя");
+        }Comment inDb = commentRepo.findById(commentId).orElseThrow();
+        inDb.setText(commentDTO.getText());
+        inDb.setDateTime(LocalDateTime.now());
 
        return commentRepo.save(inDb);
     }

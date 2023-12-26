@@ -4,6 +4,7 @@ import com.example.socialnetwork.domain.Role;
 import com.example.socialnetwork.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Set;
 @Getter
@@ -19,10 +20,13 @@ public class UserDTO {
     private String email;
     private String password;
     private String phone;
-    private String avatarUri;
-    private boolean isActive;
+    private String picture;
+    private Integer enabled;
+    private String address;
+    private String locale;
+    private String gender;
 
-    private Set<Role> roles;
+    private Set<GrantedAuthority> authority;
 
 
 }

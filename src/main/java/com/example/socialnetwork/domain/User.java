@@ -44,10 +44,13 @@ public class User  {
 
     @Column(name = "password")
     private String password;
+
     @Column(name = "gender")
     private String gender;
+
     @Column(name = "locale")
     private String locale;
+
     @Column(name = "address")
     private String address;
 

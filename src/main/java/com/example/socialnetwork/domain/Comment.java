@@ -38,6 +38,8 @@ public class Comment {
     @Column(name = "dateTime")
     private LocalDateTime dateTime;
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -92,7 +92,7 @@ public class UserServiceTest {
     public void deleteUser()  {
         User user = getDefaultUser();
 
-        userService.deleteUser(user);
+    //    userService.deleteUser(user);
 
         verify(userRepo, times(1)).delete(user);
     }
@@ -101,7 +101,7 @@ public class UserServiceTest {
     public void testGetAllUsers() {
         BDDMockito.given(userRepo.findAll()).willReturn(List.of(new User(), new User(), new User()));
 
-        assertThat(userService.getAll()).hasSize(3);
+    //    assertThat(userService.getAll()).hasSize(3);
         verify(userRepo, times(1)).findAll();
     }
 

@@ -2,10 +2,14 @@ package com.example.socialnetwork.service;
 
 import com.example.socialnetwork.domain.*;
 import com.example.socialnetwork.exception.IgnoredSocialNetworkException;
+import com.example.socialnetwork.exception.NotFoundException;
 import com.example.socialnetwork.payload.PostDTO;
 import com.example.socialnetwork.repo.ImageRepo;
 import com.example.socialnetwork.repo.PostRepo;
+import com.example.socialnetwork.repo.UserRepo;
+import com.example.socialnetwork.security.oauth.UserPrincipal;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -13,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,6 +29,7 @@ public class PostService {
     private final UserService userService;
     private final FileService fileService;
     private final ImageRepo imageRepo;
+    private final UserRepo userRepo;
 
 
 
@@ -32,23 +38,30 @@ public class PostService {
 
 
     public PostService(PostRepo postRepo, UserService userService,
-                       FileService fileService, ImageRepo imageRepo) {
+                       FileService fileService, ImageRepo imageRepo, UserRepo userRepo) {
         this.postRepo = postRepo;
         this.userService = userService;
         this.fileService = fileService;
         this.imageRepo = imageRepo;
-
+        this.userRepo = userRepo;
     }
-    public Post addPost(User user,PostDTO postDTO) {
-        Post post = new Post();
-        post.setText(postDTO.getText());
-        post.setUsername(user.getName());
+    public Post addPost(UserPrincipal userPrincipal,PostDTO postDTO) {
+        User user = userService.findById(userPrincipal.getId());
+        if (Objects.equals(user.getId(), userPrincipal.getId())) {
+            Post post = new Post();
+            post.setText(postDTO.getText());
+            post.setUsername(user.getName());
+            post.setLastname(user.getLastname());
+            post.setDateTime(LocalDateTime.now());
+            post.setUserId(user.getId());
+            return postRepo.save(post);
 
-        post.setUserId(user.getId());
-        return postRepo.save(post);
+        } else throw new NotFoundException("user not found");
+
     }
     @Transactional
-    public Post postWithImg(PostDTO postDTO,MultipartFile [] files,User user) {
+    public Post postWithImg(PostDTO postDTO,MultipartFile [] files,UserPrincipal userPrincipal) {
+        User user = userService.findById(userPrincipal.getId());
             Post post = new Post();
             post.setText(postDTO.getText());
             post.setUsername(user.getName());
@@ -69,9 +82,10 @@ public class PostService {
 
 
     @Transactional
-    public PostDTO updPost(Long id, PostDTO postDTO, List<MultipartFile> files,User user)  {
+    public PostDTO updPost(Long id, PostDTO postDTO, List<MultipartFile> files, UserPrincipal userPrincipal)  {
+            User user = userService.findById(userPrincipal.getId());
             Post inDB = postRepo.findById(id).orElseThrow();
-            if (user!=null) {
+            if (Objects.equals(user.getId(), userPrincipal.getId())) {
                 inDB.setText(postDTO.getText());
                 inDB.setDateTime(LocalDateTime.now());
                 if (!files.isEmpty()) {
@@ -103,16 +117,20 @@ public class PostService {
        return postRepo.findById(id).orElseThrow();
     }
 
-    public List<PostDTO> getAllByUserId(User user) {
-        return postRepo.findPostByUserId(user.getId()).stream().map(this::toPostDto).collect(Collectors.toList());
+    public List<PostDTO> getAllByUserId(UserPrincipal userPrincipal) {
+        User user = userService.findById(userPrincipal.getId());
+        if (Objects.equals(user.getId(), userPrincipal.getId())) {
+           return postRepo.findPostByUserId(user.getId()).stream().map(this::toPostDto).collect(Collectors.toList());
+        } else throw new UsernameNotFoundException("user not found");
     }
 
     @Transactional
-    public Post react( Long id, User user, Reactions reactions) {
+    public Post react( Long id, UserPrincipal userPrincipal, Reactions reactions) {
+        User user = userService.findById(userPrincipal.getId());
         Post inDB = postRepo.findById(id).orElseThrow();
         doReaction(inDB,user,reactions);
         checkIfAlreadyReactedOppositeAndIfRemove(reactions,user,inDB);
-        userService.update(user);
+        userService.update(id, userPrincipal);
         return postRepo.save(inDB);
     }
 
