@@ -33,15 +33,16 @@ public class PostController {
     }
 
 
- //   @PostMapping(value = "posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
- //   public Post addPost(@RequestPart(name = "text",required = false) PostDTO postDTO,
-   //                     @RequestPart(name = "file",required = false) MultipartFile [] files,@AuthenticationPrincipal UserPrincipal user)  {
-   //     return postService.postWithImg(postDTO,files,user);
-  //  }
     @PostMapping(value = "posts")
-    public Post createPost(@RequestBody PostDTO postDTO,@AuthenticationPrincipal UserPrincipal user) {
-        return postService.addPost(user, postDTO);
+    public Post addPost(@RequestPart(name = "text",required = false) String text,
+                        @RequestPart(name = "file",required = false) MultipartFile [] files,@AuthenticationPrincipal UserPrincipal user)  {
+        return postService.postWithImg(text,files,user);
     }
+  //  @PostMapping(value = "posts")
+  //  public Post createPost(@RequestBody PostDTO postDTO,@AuthenticationPrincipal UserPrincipal user) {
+  //      return postService.addPost(user, postDTO);
+  //  }
+
     @GetMapping("posts/getAllByUserId")
     public List<PostDTO> getAllByUser(@AuthenticationPrincipal UserPrincipal user) {
         return postService.getAllByUserId(user);
@@ -49,10 +50,11 @@ public class PostController {
 
 
     @PutMapping(value = "posts/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public PostDTO updMessage(@PathVariable(name = "id")Long id, @RequestPart(name = "text",required = false) PostDTO postDTO,
-                           @RequestPart(name = "file",required = false)List<MultipartFile> files,@AuthenticationPrincipal UserPrincipal user) {
-        return postService.updPost(id, postDTO, files,user);
+    public PostDTO updMessage(@PathVariable(name = "id")Long id, @RequestPart(name = "text",required = false) String text,
+                           @RequestPart(name = "file",required = false)MultipartFile[] files,@AuthenticationPrincipal UserPrincipal user) {
+        return postService.updPost(id, text, files,user);
     }
+
     @GetMapping(value = "posts")
     public List<PostDTO> getPosts() {
         return postService.getPosts();

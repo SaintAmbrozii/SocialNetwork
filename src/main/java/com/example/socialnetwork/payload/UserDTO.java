@@ -28,5 +28,20 @@ public class UserDTO {
 
     private Set<GrantedAuthority> authority;
 
+    public static UserDTO toDto(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setEmail(user.getEmail());
+        dto.setName(user.getName());
+        dto.setLastname(user.getLastname());
+        dto.setAddress(user.getAddress());
+        dto.setPhone(user.getPhone());
+        dto.setEnabled(user.getEnabled());
+        dto.setAuthority(user.getAuthority());
+        dto.setPassword(user.getPassword());
+        dto.setPicture(user.getPicture());
+        return dto;
+    }
+
 
 }

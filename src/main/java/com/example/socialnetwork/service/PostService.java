@@ -60,40 +60,46 @@ public class PostService {
 
     }
     @Transactional
-    public Post postWithImg(PostDTO postDTO,MultipartFile [] files,UserPrincipal userPrincipal) {
+    public Post postWithImg(String text, MultipartFile [] files,UserPrincipal userPrincipal) {
         User user = userService.findById(userPrincipal.getId());
+        if (Objects.equals(user.getId(), userPrincipal.getId())) {
             Post post = new Post();
-            post.setText(postDTO.getText());
+            post.setText(text);
             post.setUsername(user.getName());
+            post.setLastname(user.getLastname());
             post.setUserId(user.getId());
             post.setDateTime(LocalDateTime.now());
-        if (!(files == null)) {
-            List<Image> images = Arrays.stream(files)
-                    .map(file -> {
-                        String name =  fileService.saveFile(file);
-                        String uri = getFileData(file);
-                        return imageRepo.save(Image.builder().uri(uri).name(name).build());
-                    }).collect(Collectors.toList());
+            if (!(files == null)) {
+                List<Image> images = Arrays.stream(files)
+                        .map(file -> {
+                            String name =  fileService.saveFile(file);
+                            String uri = getFileData(file);
+                            return imageRepo.save(Image.builder().uri(uri).name(name).build());
+                        }).collect(Collectors.toList());
 
-            post.getImages().addAll(images);
+                post.getImages().addAll(images);
+            }
+            return postRepo.save(post);
         }
-        return postRepo.save(post);
+        else throw new NotFoundException("user not found");
+
+
     }
 
 
     @Transactional
-    public PostDTO updPost(Long id, PostDTO postDTO, List<MultipartFile> files, UserPrincipal userPrincipal)  {
+    public PostDTO updPost(Long id, String text, MultipartFile [] files, UserPrincipal userPrincipal)  {
             User user = userService.findById(userPrincipal.getId());
             Post inDB = postRepo.findById(id).orElseThrow();
             if (Objects.equals(user.getId(), userPrincipal.getId())) {
-                inDB.setText(postDTO.getText());
+                inDB.setText(text);
                 inDB.setDateTime(LocalDateTime.now());
-                if (!files.isEmpty()) {
+                if (!(files == null)) {
                     inDB.getImages().removeAll(inDB.getImages());
-                    List<Image> images = Stream.of(files)
+                    List<Image> images = Arrays.stream(files)
                             .map(file -> {
-                                String name =  fileService.saveFile((MultipartFile) file);
-                                String uri = getFileData((MultipartFile) file);
+                                String name =  fileService.saveFile(file);
+                                String uri = getFileData(file);
                                 return imageRepo.save(Image.builder().uri(uri).name(name).build());
                             }).collect(Collectors.toList());
 
@@ -105,6 +111,7 @@ public class PostService {
             }
             return toPostDto(inDB);
     }
+
     @Transactional
     public void deletePost(Post post) {
         postRepo.delete(post);

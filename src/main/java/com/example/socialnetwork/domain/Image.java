@@ -22,9 +22,6 @@ public class Image {
     @Column(name = "uri")
     private String uri;
 
-    public Image(String name, String originalFileName, String uri) {
-    }
-
 
     @Override
     public boolean equals(Object o) {
