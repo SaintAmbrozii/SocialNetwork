@@ -54,7 +54,7 @@ public class User  {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "AUTH_PROVIDER")
+    @Column(name = "auth_provider")
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
 

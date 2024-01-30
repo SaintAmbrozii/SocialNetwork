@@ -22,20 +22,18 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
+    @Column(name = "title")
+    private String title;
     @Column(name = "text",length = 16276)
     private String text;
-
     @Column(name = "username")
     private String username;
-
     @Column(name = "lastname")
     private String lastname;
     @Column(name = "userId")
     private Long userId;
     @Column(name = "dateTime")
     private LocalDateTime dateTime;
-
-
 
 
 

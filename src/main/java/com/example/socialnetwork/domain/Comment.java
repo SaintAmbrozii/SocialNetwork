@@ -23,7 +23,7 @@ public class Comment {
     @Column(name = "comment_id")
     private Long id;
 
-    @Column(name = "text",length = 2048)
+    @Column(name = "text",length = 8192)
     private String text;
     @Column(name = "postId")
     private Long postId;
