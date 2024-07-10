@@ -107,9 +107,11 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers("/v3/api-docs/**")
                                 .permitAll()
+                                .requestMatchers("/ws/**")
+                                .permitAll()
                                 .requestMatchers("/api/users/**").hasAuthority("ROLE_USER")
                                 .requestMatchers("/api/posts/**").hasAuthority("ROLE_USER")
-                                .requestMatchers("/api/comments?**").hasAuthority("ROLE_USER")
+                                .requestMatchers("/api/comments/**").hasAuthority("ROLE_USER")
                                 .anyRequest().authenticated())
                 .oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer.
                         authorizationEndpoint(authorizationEndpointConfig ->

@@ -27,7 +27,6 @@ public class Comment {
     private String text;
     @Column(name = "postId")
     private Long postId;
-
     @Column(name = "userId")
     private Long userId;
     @Column(name = "userName")
