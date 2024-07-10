@@ -1,7 +1,6 @@
 package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.domain.Comment;
-import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.payload.CommentDTO;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
 import com.example.socialnetwork.service.CommentService;

@@ -42,7 +42,8 @@ public class Oauth2AuthentificationSucessHandler extends SimpleUrlAuthentication
     private final UserRepo userRepository;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-    public Oauth2AuthentificationSucessHandler(TokenProvider tokenProvider, AppProperties appProperties, UserRepo userRepository, HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
+    public Oauth2AuthentificationSucessHandler(TokenProvider tokenProvider, AppProperties appProperties, UserRepo userRepository,
+                                               HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
         this.tokenProvider = tokenProvider;
         this.appProperties = appProperties;
         this.userRepository = userRepository;
