@@ -12,20 +12,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "chat_reaction")
-@IdClass(ChatReactionId.class)
 public class ChatReaction {
 
-    @Id
+    @EmbeddedId
+    private ChatReactionId chatReactionId;
+
+
     @ManyToOne
     @JoinColumn(name = "chatMessageId")
     private ChatMessage chatMessage;
 
-    @Id
+
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
 
     @Enumerated(EnumType.STRING)
     private EMOJI emoji;
+
     private LocalDateTime createdAt;
 }

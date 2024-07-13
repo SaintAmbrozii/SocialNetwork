@@ -4,15 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.example.socialnetwork.domain.Comment;
 import com.example.socialnetwork.domain.Post;
-import com.example.socialnetwork.domain.Role;
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.exception.NotFoundSocialNetworkException;
-import com.example.socialnetwork.payload.CommentDTO;
-import com.example.socialnetwork.payload.PostDTO;
+import com.example.socialnetwork.dto.CommentDTO;
 import com.example.socialnetwork.repo.CommentRepo;
 import com.example.socialnetwork.repo.PostRepo;
 import com.example.socialnetwork.service.CommentService;
-import com.example.socialnetwork.service.PostService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,11 +17,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

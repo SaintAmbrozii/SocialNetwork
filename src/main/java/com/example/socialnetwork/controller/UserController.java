@@ -3,12 +3,11 @@ package com.example.socialnetwork.controller;
 import com.example.socialnetwork.domain.User;
 
 import com.example.socialnetwork.domain.searchcriteria.UserSearchCriteria;
-import com.example.socialnetwork.payload.UserDTO;
+import com.example.socialnetwork.dto.UserDTO;
 import com.example.socialnetwork.repo.UserRepo;
 import com.example.socialnetwork.repo.specifications.UserSpecs;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
 import com.example.socialnetwork.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController

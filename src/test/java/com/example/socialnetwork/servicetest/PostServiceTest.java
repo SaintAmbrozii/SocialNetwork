@@ -1,11 +1,9 @@
 package com.example.socialnetwork.servicetest;
 
-import com.example.socialnetwork.Const;
 import com.example.socialnetwork.domain.*;
 import com.example.socialnetwork.exception.NotFoundSocialNetworkException;
-import com.example.socialnetwork.payload.PostDTO;
+import com.example.socialnetwork.dto.PostDTO;
 import com.example.socialnetwork.repo.PostRepo;
-import com.example.socialnetwork.service.FileService;
 import com.example.socialnetwork.service.PostService;
 import com.example.socialnetwork.service.UserService;
 import org.junit.Test;
@@ -13,12 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Supplier;
 
 import static com.example.socialnetwork.Const.*;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,14 +1,11 @@
-package com.example.socialnetwork.payload;
+package com.example.socialnetwork.dto;
 
 import com.example.socialnetwork.domain.Image;
 import com.example.socialnetwork.domain.Post;
-import com.example.socialnetwork.domain.User;
-import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter

@@ -3,7 +3,7 @@ package com.example.socialnetwork.service;
 import com.example.socialnetwork.domain.*;
 import com.example.socialnetwork.exception.IgnoredSocialNetworkException;
 import com.example.socialnetwork.exception.NotFoundException;
-import com.example.socialnetwork.payload.PostDTO;
+import com.example.socialnetwork.dto.PostDTO;
 import com.example.socialnetwork.repo.ImageRepo;
 import com.example.socialnetwork.repo.PostRepo;
 import com.example.socialnetwork.repo.UserRepo;
@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class PostService {

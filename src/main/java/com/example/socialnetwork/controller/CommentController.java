@@ -1,7 +1,7 @@
 package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.domain.Comment;
-import com.example.socialnetwork.payload.CommentDTO;
+import com.example.socialnetwork.dto.CommentDTO;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
 import com.example.socialnetwork.service.CommentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

@@ -1,6 +1,6 @@
 package com.example.socialnetwork.security.oauth;
 
-import com.example.socialnetwork.payload.ChatNotification;
+import com.example.socialnetwork.dto.ChatNotificationDTO;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class SecurityCheck {
                 .equals(username);
     }
 
-    public static void deleteAttachment(ChatNotification chatNotification) {
+    public static void deleteAttachment(ChatNotificationDTO chatNotification) {
         String fileUrl = chatNotification.getFileUrl();
         if(fileUrl != null && !fileUrl.isBlank()){
             Path filePath = Paths.get(fileUrl);

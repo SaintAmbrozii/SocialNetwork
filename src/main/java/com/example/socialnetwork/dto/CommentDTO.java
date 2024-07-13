@@ -1,8 +1,6 @@
-package com.example.socialnetwork.payload;
+package com.example.socialnetwork.dto;
 
 import com.example.socialnetwork.domain.Comment;
-import com.example.socialnetwork.domain.User;
-import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDateTime;

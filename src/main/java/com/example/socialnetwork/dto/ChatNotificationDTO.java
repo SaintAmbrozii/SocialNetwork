@@ -1,4 +1,4 @@
-package com.example.socialnetwork.payload;
+package com.example.socialnetwork.dto;
 
 import com.example.socialnetwork.domain.EMOJI;
 import lombok.*;
@@ -9,8 +9,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class ChatNotification {
+public class ChatNotificationDTO {
 
    private UUID id;
    private String sender;

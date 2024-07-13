@@ -1,5 +1,6 @@
 package com.example.socialnetwork.domain;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,9 +10,14 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Embeddable
 public class ChatReactionId implements Serializable {
 
+
+
     private UUID chatMessage;
+
+
     private Long user;
 
     @Override

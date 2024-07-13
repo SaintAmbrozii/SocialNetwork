@@ -3,7 +3,7 @@ package com.example.socialnetwork.service;
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.exception.IgnoredSocialNetworkException;
 import com.example.socialnetwork.exception.NotFoundException;
-import com.example.socialnetwork.payload.UserDTO;
+import com.example.socialnetwork.dto.UserDTO;
 import com.example.socialnetwork.repo.UserRepo;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +58,13 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepo.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+    }
+    public boolean isPhoneNumberTaken(String phoneNumber){
+        return userRepo.findByPhone(phoneNumber).isPresent();
+    }
+
+    public boolean doesUsernameExists(String username){
+        return userRepo.findUserByEmail(username).isPresent();
     }
 
     public User subscribeByUser(UserPrincipal principal, Long id) {

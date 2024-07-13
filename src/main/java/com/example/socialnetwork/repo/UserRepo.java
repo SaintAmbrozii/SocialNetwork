@@ -22,12 +22,8 @@ public interface UserRepo extends JpaRepository<User,Long>, JpaSpecificationExec
     Set<User> findBySubscribers(User user);
     Set<User> findBySubscriptions(User user);
     Optional<User> findByName(String name);
+    Optional<User> findByPhone(String number);
 
-    Slice<User> findBySubscriptions(User user, Pageable pageable);
-    Slice<User> findBySubscribers(User user,Pageable pageable);
 
-    Integer countBySubscribers(User user);
-
-    Integer countBySubscriptions(User user);
 
 }

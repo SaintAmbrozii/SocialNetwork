@@ -4,7 +4,7 @@ import com.example.socialnetwork.domain.Comment;
 import com.example.socialnetwork.domain.Post;
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.exception.NotFoundException;
-import com.example.socialnetwork.payload.CommentDTO;
+import com.example.socialnetwork.dto.CommentDTO;
 import com.example.socialnetwork.repo.CommentRepo;
 import com.example.socialnetwork.repo.PostRepo;
 import com.example.socialnetwork.repo.UserRepo;

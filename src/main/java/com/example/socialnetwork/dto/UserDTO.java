@@ -1,8 +1,6 @@
-package com.example.socialnetwork.payload;
+package com.example.socialnetwork.dto;
 
-import com.example.socialnetwork.domain.Role;
 import com.example.socialnetwork.domain.User;
-import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 

@@ -4,13 +4,10 @@ package com.example.socialnetwork.controller;
 import com.example.socialnetwork.domain.Post;
 import com.example.socialnetwork.domain.Reactions;
 import com.example.socialnetwork.domain.searchcriteria.PostSearchCriteria;
-import com.example.socialnetwork.domain.searchcriteria.UserSearchCriteria;
-import com.example.socialnetwork.payload.PostDTO;
+import com.example.socialnetwork.dto.PostDTO;
 
-import com.example.socialnetwork.payload.UserDTO;
 import com.example.socialnetwork.repo.PostRepo;
 import com.example.socialnetwork.repo.specifications.PostSpecs;
-import com.example.socialnetwork.repo.specifications.UserSpecs;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
 import com.example.socialnetwork.service.PostService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
