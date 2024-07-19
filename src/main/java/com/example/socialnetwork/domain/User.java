@@ -75,20 +75,6 @@ public class User  {
 
 
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinTable(name = "users_likes",
-            joinColumns = @JoinColumn(name = "customer_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id"))
-    @ToString.Exclude
-    private Set<Post> likesPosts = new HashSet<>();
-
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinTable(name = "users_dislikes",
-            joinColumns = @JoinColumn(name = "customer_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id"))
-    @ToString.Exclude
-    private Set<Post> dislikesPosts = new HashSet<>();
-
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_subscribers",
             joinColumns = { @JoinColumn(name = "channel_id") },
@@ -133,29 +119,7 @@ public class User  {
         subscriptions.remove(user);
     }
 
-    public Boolean addLikedPost(Post post) {
-        return likesPosts.add(post);
-    }
 
-    public Boolean removeLikedPost(Post post) {
-        return likesPosts.remove(post);
-    }
-
-    public Boolean addDislikedPost( Post post) {
-        return dislikesPosts.add(post);
-    }
-
-    public Boolean removeDislikedPost(Post post) {
-        return dislikesPosts.remove(post);
-    }
-
-    public Boolean hasLikedPost(Post post) {
-        return likesPosts.contains(post);
-    }
-
-    public Boolean hasDislikedPost(Post post) {
-        return dislikesPosts.contains(post);
-    }
 
 
 

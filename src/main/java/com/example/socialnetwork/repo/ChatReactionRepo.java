@@ -11,15 +11,17 @@ import java.util.UUID;
 
 public interface ChatReactionRepo extends JpaRepository<ChatReaction, ChatReactionId> {
 
+
     @Query("SELECT cr FROM ChatReaction cr WHERE cr.chatMessage.id=:chatMessageId")
     List<ChatReaction> findByChatMessage(UUID chatMessageId);
+
 
 
     @Query("""
             SELECT cr FROM ChatReaction cr
             WHERE cr.chatMessage.id=:chatMessageId
-            AND cr.user.username=:username
+            AND cr.user.email=:email
             """
     )
-    Optional<ChatReaction> findByChatMessageAndUser(UUID chatMessageId, String username);
+    Optional<ChatReaction> findByChatMessageAndUser(UUID chatMessageId, String email);
 }

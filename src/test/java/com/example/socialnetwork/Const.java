@@ -30,8 +30,7 @@ public class Const {
     public static final MultipartFile IMAGE_MOCK_MULTIPART_FILE = new MockMultipartFile("image", "image.jpg",
             MediaType.IMAGE_JPEG_VALUE, "image bytes".getBytes());
 
-    public static final Image image = new Image(IMAGE_MOCK_MULTIPART_FILE.getName(),
-            IMAGE_MOCK_MULTIPART_FILE.getOriginalFilename(), "http://localhost:8080/api/test");
+
 
 
     public static final long SECOND_ID = 2L;

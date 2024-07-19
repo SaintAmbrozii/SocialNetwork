@@ -130,46 +130,9 @@ public class PostService {
         } else throw new UsernameNotFoundException("user not found");
     }
 
-    @Transactional
-    public Post react( Long id, UserPrincipal userPrincipal, Reactions reactions) {
-        User user = userService.findById(userPrincipal.getId());
-        Post inDB = postRepo.findById(id).orElseThrow();
-        doReaction(inDB,user,reactions);
-        checkIfAlreadyReactedOppositeAndIfRemove(reactions,user,inDB);
-        userService.update(id, userPrincipal);
-        return postRepo.save(inDB);
-    }
 
-    private void doReaction(Post post, User reactedByUser, Reactions reaction) {
-        switch (reaction) {
-            case LIKE:
-                if (reactedByUser.getLikesPosts().add(post))
-                    post.plusLikes();
-                else throwAlreadyReactedIgnored();
-                break;
-            case UNLIKE:
-                if (reactedByUser.getLikesPosts().remove(post))
-                    post.minusLikes();
-                else throwNotReactedIgnored();
-                break;
-            case DISLIKE:
-                if (reactedByUser.getDislikesPosts().add(post))
-                    post.plusDislikes();
-                else throwAlreadyReactedIgnored();
-                break;
-            case UN_DISLIKE:
-                if (reactedByUser.getDislikesPosts().remove(post))
-                    post.minusDislikes();
-                else throwNotReactedIgnored();
-                break;
-        }
-    }
-    private void checkIfAlreadyReactedOppositeAndIfRemove(Reactions reaction, User user, Post post) {
-        if (reaction == Reactions.LIKE)
-            user.getDislikesPosts().remove(post);
-        if (reaction == Reactions.DISLIKE)
-            user.getLikesPosts().remove(post);
-    }
+
+
 
     private void throwAlreadyReactedIgnored() {
         throw new IgnoredSocialNetworkException("Already reacted that way, ignored");

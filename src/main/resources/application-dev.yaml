@@ -1,0 +1,64 @@
+spring:
+  main:
+    allow-circular-references: true
+  session:
+    jdbc:
+      initialize-schema: always
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 51MB
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client_id: 604912936308-068d18vf0ucgb28j21iuuo0tvfgqnk59.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: http://localhost:8080/oauth2/callback/google
+            scope: email,profile,openid
+
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/socialnetwork
+    username: postgres
+    password: bestuser
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  kafka:
+    listener:
+      ack-mode: manual
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: myGroup
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+
+
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
+app:
+  file:
+    upload-dir: \C:\\Users\\ADMIN\\IdeaProjects\\SocialNetwork\\src\\main\\resources\\static
+  auth:
+    tokenSecret: "926D96C90030DD58429D2751AC1BDBBC"
+    tokenExpirationMsec: 864000000
+    authorizedRedirectUris: http://localhost:8080/oauth2/redirect,http://localhost:8080/,http://localhost:8080/oauth2/redirect

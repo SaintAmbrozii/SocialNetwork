@@ -95,21 +95,5 @@ public class PostController {
         postService.deletePost(post);
     }
 
-    @PutMapping("posts/{id}/likes")
-    public Post like(@PathVariable(name = "id") Long id, @AuthenticationPrincipal UserPrincipal user) {
-        return postService.react(id, user, Reactions.LIKE);
-    }
-    @PutMapping("posts/{id}/dislikes")
-    public Post disLike(@PathVariable(name = "id") Long id,@AuthenticationPrincipal UserPrincipal user) {
-        return postService.react(id,user,Reactions.DISLIKE);
-    }
-    @PutMapping("posts/{id}/unlikes")
-    public Post unLike(@PathVariable(name = "id") Long id,@AuthenticationPrincipal UserPrincipal user) {
-        return postService.react(id,user,Reactions.UNLIKE);
-    }
-    @PutMapping("posts/{id}/undislikes")
-    public Post unDislike(@PathVariable(name = "id") Long id,@AuthenticationPrincipal UserPrincipal user) {
-        return postService.react(id,user,Reactions.UN_DISLIKE);
-    }
 
 }
