@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@Embeddable
 public class ChatReactionId implements Serializable {
 
 

@@ -12,17 +12,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "chat_reaction")
+@IdClass(ChatReactionId.class)
 public class ChatReaction {
 
-    @EmbeddedId
-    private ChatReactionId chatReactionId;
 
-
+    @Id
     @ManyToOne
     @JoinColumn(name = "chatMessageId")
     private ChatMessage chatMessage;
 
-
+    @Id
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;

@@ -29,20 +29,17 @@ public class PostService {
     private final FileService fileService;
     private final ImageRepo imageRepo;
     private final UserRepo userRepo;
-
-
-
-
-
+    private final LikeService likeService;
 
 
     public PostService(PostRepo postRepo, UserService userService,
-                       FileService fileService, ImageRepo imageRepo, UserRepo userRepo) {
+                       FileService fileService, ImageRepo imageRepo, UserRepo userRepo, LikeService likeService) {
         this.postRepo = postRepo;
         this.userService = userService;
         this.fileService = fileService;
         this.imageRepo = imageRepo;
         this.userRepo = userRepo;
+        this.likeService = likeService;
     }
     public Post addPost(UserPrincipal userPrincipal,PostDTO postDTO) {
         User user = userService.findById(userPrincipal.getId());
@@ -119,8 +116,9 @@ public class PostService {
     public List<PostDTO> getPosts() {
         return postRepo.findAll().stream().map(this::toPostDto).collect(Collectors.toList());
     }
-    public Post findById(Long id) {
-       return postRepo.findById(id).orElseThrow();
+    public PostDTO findById(Long id) {
+       Post inDB = postRepo.findById(id).orElseThrow();
+       return toPostDto(inDB);
     }
 
     public List<PostDTO> getAllByUserId(UserPrincipal userPrincipal) {
@@ -130,17 +128,21 @@ public class PostService {
         } else throw new UsernameNotFoundException("user not found");
     }
 
-
-
-
-
-    private void throwAlreadyReactedIgnored() {
-        throw new IgnoredSocialNetworkException("Already reacted that way, ignored");
+    public PostDTO likeByPost(Long id, UserPrincipal userPrincipal) {
+        Post inDB = postRepo.findById(id).orElseThrow();
+        likeService.addLikeToPost(inDB.getId(),userPrincipal);
+        return toPostDto(inDB);
     }
 
-    private void throwNotReactedIgnored() {
-        throw new IgnoredSocialNetworkException("Not reacted that way, ignored");
+    public PostDTO deleteLikeByPost(Long id,UserPrincipal userPrincipal) {
+        Post inDB = postRepo.findById(id).orElseThrow();
+        likeService.deleteLikeToPost(inDB.getId(),userPrincipal);
+        return toPostDto(inDB);
     }
+
+
+
+
 
 
     private PostDTO toPostDto(Post post) {

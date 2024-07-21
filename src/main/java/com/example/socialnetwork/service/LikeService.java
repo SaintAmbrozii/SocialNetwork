@@ -29,7 +29,7 @@ public class LikeService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public LikesPost addLikeToPost(Long postId, UserPrincipal principal) {
+    public void addLikeToPost(Long postId, UserPrincipal principal) {
         Post inDB = postRepo.findById(postId).orElseThrow();
         User authUser = userRepo.findById(principal.getId()).orElseThrow();
         if (!likeRepo.existsLikesPostByUserId(authUser.getId())) {
@@ -39,7 +39,7 @@ public class LikeService {
                     .created_at(LocalDateTime.now()).build();
             inDB.plusDislikes();
             postRepo.save(inDB);
-            return   likeRepo.save(newLike);
+            likeRepo.save(newLike);
         }
         throw new UserIsExist("данный пост уже был лайкнут");
     }

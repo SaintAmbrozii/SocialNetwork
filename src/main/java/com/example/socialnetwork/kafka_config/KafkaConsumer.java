@@ -34,7 +34,7 @@ public class KafkaConsumer {
     private final ChatReactionService chatReactionService;
     private final UserService userService;
 
-    @KafkaListener(topics = "chat-topic", groupId = "myGroup")
+    @KafkaListener(topics = "chat-topic", groupId = "socialNetwork")
     public void receiveMessage(@Payload ConsumerRecord<String, Object> record,
                                Acknowledgment acknowledgment
     ) {

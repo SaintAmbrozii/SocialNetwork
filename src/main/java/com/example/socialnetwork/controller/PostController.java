@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,13 +87,22 @@ public class PostController {
    // }
 
     @GetMapping("posts/{id}")
-    public Post findById(@PathVariable(name = "id") Long id){
+    public PostDTO findById(@PathVariable(name = "id") Long id){
         return postService.findById(id);
     }
 
     @DeleteMapping("posts/{id}")
     public void deletePost(@PathVariable(name = "id") Post post) {
         postService.deletePost(post);
+    }
+
+    @PatchMapping("posts/{id}/like")
+    public PostDTO likeByPost(@PathVariable(name = "id")Long id,@AuthenticationPrincipal UserPrincipal user) {
+        return postService.likeByPost(id, user);
+    }
+    @PatchMapping("posts/{id}/unlike")
+    public PostDTO deleteLikeByPost(@PathVariable(name = "id")Long id,@AuthenticationPrincipal UserPrincipal user) {
+        return postService.deleteLikeByPost(id, user);
     }
 
 

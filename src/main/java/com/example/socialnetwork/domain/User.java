@@ -92,6 +92,9 @@ public class User  {
     @ToString.Exclude
     private Set<User> subscriptions = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokenList;
+
 
 
     public User(long l, String test, String s, String s1) {

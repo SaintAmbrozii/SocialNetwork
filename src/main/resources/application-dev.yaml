@@ -36,7 +36,7 @@ spring:
       ack-mode: manual
     consumer:
       bootstrap-servers: localhost:9092
-      group-id: myGroup
+      group-id: socialNetwork
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
@@ -48,16 +48,13 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
-
-
 logging:
   level:
     org:
       springframework:
         security: TRACE
 app:
-  file:
-    upload-dir: \C:\\Users\\ADMIN\\IdeaProjects\\SocialNetwork\\src\\main\\resources\\static
+  file: upload-dir=\C:\\Users\\ADMIN\\IdeaProjects\\SocialNetwork\\src\\main\\resources\\static
   auth:
     tokenSecret: "926D96C90030DD58429D2751AC1BDBBC"
     tokenExpirationMsec: 864000000

@@ -12,6 +12,7 @@ public class KafkaTopicConfig {
     public NewTopic habTopic(){
         return TopicBuilder
                 .name("chat-topic")
+                .partitions(1)
                 .build();
     }
 }

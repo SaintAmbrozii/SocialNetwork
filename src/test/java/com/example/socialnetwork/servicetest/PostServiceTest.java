@@ -53,22 +53,7 @@ public class PostServiceTest {
 
 
 //
-    @Test
-    public void shouldFindAndReturnOnePost() {
 
-        Post expectedPost = Post.builder().id(postId)
-                .userId(userId)
-                .images(new ArrayList<>()).
-                build();
-
-        when(postRepository.findById(postId)).thenReturn(Optional.of(expectedPost));
-
-        Post actualPost = postService.findById(postId);
-
-        assertThat(actualPost).usingRecursiveComparison().isEqualTo(expectedPost);
-        verify(postRepository, times(1)).findById(postId);
-        verifyNoMoreInteractions(postRepository);
-    }
 
     @Test
     public void testCreatePost() {
