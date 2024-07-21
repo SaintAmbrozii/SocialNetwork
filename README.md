@@ -6,7 +6,7 @@ step 1 : point to a new log directory in server.properties file and save the fil
 
 log.dirs=C:\Tools\kafka_2.11-2.1.0\kafka-test-logs
 
-step 2. Edit kafka servet config to new log.dids
+step 2. Edit kafka servet config to new log.dirs
 
 step 3 : start the kafka server again
 
