@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,16 +34,18 @@ public class SecurityConfig {
     private final Oauth2AuthentificationSucessHandler oAuth2AuthenticationSuccessHandler;
     private final Oauth2AuthentificationFailureHandler oAuth2AuthenticationFailureHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private final LogoutService logoutService;
 
     public SecurityConfig(TokenProvider tokenProvider, CustomUserDetailsService customUserDetailsService,
                           Oauth2AuthentificationSucessHandler oAuth2AuthenticationSuccessHandler,
                           Oauth2AuthentificationFailureHandler oAuth2AuthenticationFailureHandler,
-                          HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
+                          HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository, LogoutService logoutService) {
         this.tokenProvider = tokenProvider;
         this.customUserDetailsService = customUserDetailsService;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
         this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
+        this.logoutService = logoutService;
     }
 
     @Bean
@@ -121,6 +124,9 @@ public class SecurityConfig {
                                 .successHandler(oAuth2AuthenticationSuccessHandler)
                                 .failureHandler(oAuth2AuthenticationFailureHandler)
                         )
+                .logout(logout->logout.addLogoutHandler(logoutService)
+                        .logoutUrl("api/auth/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()))
                 .anonymous(AbstractHttpConfigurer::disable)
                 .addFilterBefore(tokenAuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class);
