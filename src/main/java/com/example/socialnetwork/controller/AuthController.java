@@ -3,12 +3,15 @@ package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.domain.AuthProvider;
 import com.example.socialnetwork.domain.Role;
+import com.example.socialnetwork.domain.Token;
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.payload.ApiResponse;
 import com.example.socialnetwork.payload.LoginRequest;
 import com.example.socialnetwork.payload.SignUpRequest;
 import com.example.socialnetwork.payload.TokenResponse;
+import com.example.socialnetwork.repo.TokenRepo;
 import com.example.socialnetwork.security.oauth.TokenProvider;
+import com.example.socialnetwork.service.TokenService;
 import com.example.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -19,6 +22,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +32,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,8 +44,10 @@ public class AuthController {
     private final UserService userService;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder encoder;
+    private final TokenService tokenService;
 
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 
@@ -49,10 +57,12 @@ public class AuthController {
                         loginRequest.getPassword()
                 )
         );
+        User user = userService.findByEmail(loginRequest.getEmail()).orElseThrow();
+        tokenService.revokeAllUserToken(user);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = tokenProvider.createToken(authentication);
-
+        tokenService.saveToken(user, token);
         return ResponseEntity.ok(new TokenResponse(token));
     }
 
@@ -84,4 +94,7 @@ public class AuthController {
         return ResponseEntity.created(location)
                 .body(new ApiResponse(true, "User registered successfully@"));
     }
+
+
+
 }
