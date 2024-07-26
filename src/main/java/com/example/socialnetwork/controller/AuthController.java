@@ -11,6 +11,7 @@ import com.example.socialnetwork.payload.SignUpRequest;
 import com.example.socialnetwork.payload.TokenResponse;
 import com.example.socialnetwork.repo.TokenRepo;
 import com.example.socialnetwork.security.oauth.TokenProvider;
+import com.example.socialnetwork.service.AccountService;
 import com.example.socialnetwork.service.TokenService;
 import com.example.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -45,11 +46,12 @@ public class AuthController {
     private final TokenProvider tokenProvider;
     private final PasswordEncoder encoder;
     private final TokenService tokenService;
+    private final AccountService accountService;
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<TokenResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -59,7 +61,7 @@ public class AuthController {
         );
         User user = userService.findByEmail(loginRequest.getEmail()).orElseThrow();
         tokenService.revokeAllUserToken(user);
-
+        accountService.setOnlineStatus(user.getId(),true);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = tokenProvider.createToken(authentication);
         tokenService.saveToken(user, token);
@@ -68,7 +70,7 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<ApiResponse> registerUser(@RequestBody SignUpRequest signUpRequest) {
         Optional<User> userFromDB = userService.findByUsername(signUpRequest.getEmail());
 
         if (userFromDB.isPresent()) {
