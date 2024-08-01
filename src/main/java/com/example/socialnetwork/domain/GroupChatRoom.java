@@ -25,6 +25,7 @@ public class GroupChatRoom {
             generator = "chatRoom_sequence"
     )
     private Long id;
+
     @Column(unique = true)
     private String groupName;
 

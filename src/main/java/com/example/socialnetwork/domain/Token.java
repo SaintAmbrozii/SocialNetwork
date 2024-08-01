@@ -3,7 +3,6 @@ package com.example.socialnetwork.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -20,7 +19,6 @@ public class Token {
 
     @Column(name = "token")
     private String token;
-
 
     private boolean expired = false;
 

@@ -74,23 +74,7 @@ public class User  {
     private Set<GrantedAuthority> authority = new HashSet<>();
 
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_subscribers",
-            joinColumns = { @JoinColumn(name = "channel_id") },
-            inverseJoinColumns = { @JoinColumn(name = "subscriber_id") }
-    )
-    @ToString.Exclude
-    private Set<User> subscribers = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_subscriptions",
-            joinColumns = { @JoinColumn(name = "subscriber_id") },
-            inverseJoinColumns = { @JoinColumn(name = "channel_id") }
-    )
-    @ToString.Exclude
-    private Set<User> subscriptions = new HashSet<>();
 
     @OneToOne
     private Account account;
@@ -104,26 +88,6 @@ public class User  {
     }
 
 
-
-    public Boolean isSubscriptions(User user) {
-        return subscriptions.contains(user);
-    }
-
-    public void addSubscribers(User user) {
-        subscribers.add(user);
-    }
-
-    public void removeSubscribers(User user) {
-        subscribers.remove(user);
-    }
-
-    public void addSubscriptions(User user) {
-        subscriptions.add(user);
-    }
-
-    public void removeSubscriptions(User user) {
-        subscriptions.remove(user);
-    }
 
 
 

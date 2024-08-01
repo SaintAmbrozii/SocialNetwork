@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,11 +34,14 @@ public class Account {
     private ZonedDateTime regDate;
     @Column(name = "birth_date", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private ZonedDateTime birthDate;
+    @Column(name = "country")
+    private String country;
+    @Column(name = "city")
+    private String city;
     @Column(name = "message_permission")
     private String messagePermission;
     @Column(name = "last_online_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private ZonedDateTime lastOnlineTime;
-
 
     @Column(name = "created_on", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private ZonedDateTime createdOn;
@@ -47,4 +51,7 @@ public class Account {
     private boolean online;
 
     private boolean blocket;
+
+    @OneToMany
+    private List<UserContact> friendList;
 }
