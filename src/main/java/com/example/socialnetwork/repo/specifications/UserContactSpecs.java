@@ -13,7 +13,6 @@ import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.socialnetwork.utils.SpecsUtil.in;
 
 public class UserContactSpecs {
 
@@ -75,7 +74,7 @@ public class UserContactSpecs {
     }
 
 
-    private static Specification <UserContact> getSeacrhContactSpecs(ContactsSearchCriteria criteria) {
+    public static Specification <UserContact> getSeacrhContactSpecs(ContactsSearchCriteria criteria) {
         return BaseId(criteria)
                 .and(getIds(criteria))
                 .and(getStatus(criteria.getStatus()))
