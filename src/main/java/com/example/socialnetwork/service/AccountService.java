@@ -45,6 +45,13 @@ public class AccountService {
             accountRepo.save(account);
         }
     }
+
+    public Optional<Account> getMyAccount(UserPrincipal principal) {
+       return  accountRepo.findById(principal.getId());
+
+    }
+
+
     public Account update(Account account, UserPrincipal principal) {
         Optional<Account> forUser = accountRepo.findById(principal.getId());
         if (forUser.isPresent()){
