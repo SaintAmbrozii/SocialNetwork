@@ -41,7 +41,7 @@ public class UserContactSpecs {
         return (root, criteriaQuery, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (!ObjectUtils.isEmpty(criteria.getIds()))
-                predicates.add(cb.equal(root.get("ids"), criteria.getIds()));
+                predicates.add(cb.equal(root.get("id"), criteria.getIds()));
             return cb.and(predicates.toArray(new Predicate[]{}));
         };
     }
@@ -50,7 +50,7 @@ public class UserContactSpecs {
         return (root, criteriaQuery, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (!ObjectUtils.isEmpty(status))
-                predicates.add(cb.equal(root.get("status"), status.equals(UserStatus.FRIEND)));
+                predicates.add(cb.equal(root.get("status"), status));
             return cb.and(predicates.toArray(new Predicate[]{}));
         };
     }

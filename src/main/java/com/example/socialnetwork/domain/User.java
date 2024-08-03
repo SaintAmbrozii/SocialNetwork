@@ -23,7 +23,8 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Builder
-@ToString(callSuper = true)
+@ToString
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,10 +75,6 @@ public class User  {
     private Set<GrantedAuthority> authority = new HashSet<>();
 
 
-
-
-    @OneToOne
-    private Account account;
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokenList;

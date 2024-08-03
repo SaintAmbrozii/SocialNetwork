@@ -61,7 +61,8 @@ public class PostController {
 
     @PostMapping(value = "posts")
     public Post addPost(@RequestPart(name = "text",required = false) String text,
-                        @RequestPart(name = "file",required = false) MultipartFile [] files,@AuthenticationPrincipal UserPrincipal user)  {
+                        @RequestPart(name = "file",required = false) MultipartFile [] files,
+                        @AuthenticationPrincipal UserPrincipal user)  {
         return postService.postWithImg(text,files,user);
     }
   //  @PostMapping(value = "posts")

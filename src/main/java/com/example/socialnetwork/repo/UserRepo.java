@@ -1,5 +1,6 @@
 package com.example.socialnetwork.repo;
 
+import com.example.socialnetwork.domain.Account;
 import com.example.socialnetwork.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,10 +20,11 @@ public interface UserRepo extends JpaRepository<User,Long>, JpaSpecificationExec
 
     Optional<User> findUserByEmail(String email);
 
-    Set<User> findBySubscribers(User user);
-    Set<User> findBySubscriptions(User user);
+
     Optional<User> findByName(String name);
     Optional<User> findByPhone(String number);
+
+
 
 
 

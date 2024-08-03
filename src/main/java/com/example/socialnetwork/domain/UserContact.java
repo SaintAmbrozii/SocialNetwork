@@ -34,5 +34,6 @@ public class UserContact {
     private LocalDateTime created_at;
 
 
-
+    public UserContact(Long fromAccountId, UserStatus status, Long toAccountId) {
+    }
 }

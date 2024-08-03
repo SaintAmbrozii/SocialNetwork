@@ -67,41 +67,8 @@ public class UserService {
         return userRepo.findUserByEmail(username).isPresent();
     }
 
-    public User subscribeByUser(UserPrincipal principal, Long id) {
-        User subscribeByUser = userRepo.findById(id).orElseThrow();
-        User currentUser = userRepo.findUserByEmail(principal.getUsername()).orElseThrow();
-        if (!currentUser.isSubscriptions(subscribeByUser)) {
-            subscribeByUser.addSubscribers(currentUser);
-            currentUser.addSubscriptions(subscribeByUser);
-            userRepo.save(subscribeByUser);
-            userRepo.save(currentUser);
-        } else
-            throw new IgnoredSocialNetworkException(String.format("Already following user id=%d, ignored", id));
-        return subscribeByUser;
 
-    }
-    public User unSubscribeByUser(UserPrincipal principal, Long id) {
-        User subscribeUser = userRepo.findById(id).orElseThrow();
-        User currentUser = userRepo.findUserByEmail(principal.getUsername()).orElseThrow();
-        if (currentUser.isSubscriptions(subscribeUser)) {
-            currentUser.removeSubscriptions(subscribeUser);
-            subscribeUser.removeSubscribers(currentUser);
-            userRepo.save(subscribeUser);
-            userRepo.save(currentUser);
-        } else
-            throw new IgnoredSocialNetworkException(String.format("Did not follow user id=%d, ignored", id));
-        return subscribeUser;
 
-    }
-    public Set<User> getAllSubscribers(Long id) {
-        User inDB = userRepo.findById(id).orElseThrow();
-        return   userRepo.findBySubscribers(inDB);
-
-    }
-    public Set<User> getAllSubscription(Long id){
-        User inDB = userRepo.findById(id).orElseThrow();
-        return userRepo.findBySubscriptions(inDB);
-    }
     public UserDTO doDto (User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());

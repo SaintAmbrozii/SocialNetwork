@@ -15,14 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "user_account")
-public class Account {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToOne
-    private User user;
+public class Account extends User{
 
     @Column(name = "about")
     private String about;

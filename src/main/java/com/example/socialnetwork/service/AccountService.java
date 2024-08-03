@@ -8,25 +8,24 @@ import com.example.socialnetwork.repo.UserRepo;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @Service
 public class AccountService {
 
-    private final AccountRepo accountRepo;
-    private final UserRepo userRepo;
 
-    public AccountService(AccountRepo accountRepo, UserRepo userRepo) {
-        this.accountRepo = accountRepo;
+    private final UserRepo userRepo;
+    private final AccountRepo accountRepo;
+
+    public AccountService(UserRepo userRepo, AccountRepo accountRepo) {
         this.userRepo = userRepo;
+        this.accountRepo = accountRepo;
     }
 
     public Account create(Account account,UserPrincipal principal) {
         Optional<User> user = userRepo.findById(principal.getId());
         if (user.isPresent()) {
-            User accountUser = user.get();
             Account newAccount = new Account();
             newAccount.setCreatedOn(ZonedDateTime.now());
             newAccount.setBirthDate(account.getBirthDate());
@@ -38,12 +37,32 @@ public class AccountService {
     }
 
     public void setOnlineStatus(Long id,boolean status) {
-        Optional<Account> inDB = accountRepo.findByUserId(id);
+        Optional<Account> inDB = accountRepo.findById(id);
         if (inDB.isPresent()) {
             Account account = inDB.get();
             account.setOnline(status);
+            account.setLastOnlineTime(null);
             accountRepo.save(account);
         }
+    }
+    public Account update(Account account, UserPrincipal principal) {
+        Optional<Account> forUser = accountRepo.findById(principal.getId());
+        if (forUser.isPresent()){
+            Account userAccount = forUser.get();
+            userAccount.setAddress(account.getAddress());
+            userAccount.setCity(account.getCity());
+            userAccount.setCountry(account.getCountry());
+            userAccount.setBirthDate(account.getBirthDate());
+            userAccount.setAbout(account.getAbout());
+            userAccount.setUpdatedOn(ZonedDateTime.now());
+            userRepo.save(account);
+        }
+        throw new NotFoundException("пользователь отсуствует");
+
+    }
+
+    public void delete(UserPrincipal principal) {
+        accountRepo.deleteById(principal.getId());
     }
 
 }
