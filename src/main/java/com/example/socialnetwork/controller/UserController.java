@@ -81,21 +81,5 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @PutMapping("{id}/subscribes")
-    public User subscribeByUser(@PathVariable(name = "id") Long id, @AuthenticationPrincipal  UserPrincipal userPrincipal){
-        return userService.subscribeByUser(userPrincipal, id);
-    }
-    @PutMapping("{id}/unsubscribes")
-    public User unSubscribeUser(@PathVariable(name = "id")Long id,@AuthenticationPrincipal UserPrincipal userPrincipal){
-         return userService.unSubscribeByUser(userPrincipal, id);
-    }
-    @GetMapping("{id}/subscribers")
-    public Set<User> subscribersByUser(@PathVariable(name = "id")Long id) {
-        return userService.getAllSubscribers(id);
-    }
 
-    @GetMapping("{id}/subscriptions")
-    public Set<User> subscriptionsByUser(@PathVariable(name = "id")Long id) {
-        return userService.getAllSubscription(id);
-    }
 }

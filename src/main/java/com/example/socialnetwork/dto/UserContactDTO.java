@@ -1,5 +1,6 @@
 package com.example.socialnetwork.dto;
 
+import com.example.socialnetwork.domain.UserContact;
 import com.example.socialnetwork.domain.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,15 @@ public class UserContactDTO {
     private Long toAccountId;
 
     private LocalDateTime created_at;
+
+    public static UserContactDTO toDto(UserContact userContact) {
+        UserContactDTO dto = new UserContactDTO();
+        dto.setId(userContact.getId());
+        dto.setStatus(userContact.getStatus());
+        dto.setFromAccountId(userContact.getFromAccountId());
+        dto.setToAccountId(userContact.getToAccountId());
+        return dto;
+    }
 
 
 

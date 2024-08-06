@@ -105,12 +105,7 @@ public class UserControllerTest {
 
     }
 
-    @Test
-    public void unSubcribe() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put( URL_PREFIX + "/"+SECOND_ID + "/" +"unsubscribe"))
-                .andExpect(status().isOk());
-        verify(userService, times(1)).unSubscribeByUser(any(), any());
-    }
+
 
     @Test
     public void testUpdateUser() throws Exception {
@@ -130,25 +125,11 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.email", is("kadirov@test.com")))
                 .andReturn();
     }
-    @Test
-
-    public void getSubscribers() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(URL_PREFIX + "/" + USER_ID + "/"+"subscribers")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        verify(userService, times(1)).getAllSubscribers(USER_ID);
-    }
 
 
-    @Test
-    public void getSubscriprions() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(URL_PREFIX + "/" + USER_ID + "/"+"subscriptions")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
 
-        verify(userService, times(1)).getAllSubscription(USER_ID);
-    }
+
+
 
     @Test
     public void deleteSuccess() throws Exception {

@@ -33,7 +33,7 @@ public class ContactService {
 
     public UserContactDTO findById(Long id) {
 
-        return userContactMapper.convertToDto(contactRepo.findById(id).orElseThrow());
+        return contactRepo.findById(id).map(UserContactDTO::toDto).orElseThrow();
 
     }
 
