@@ -45,6 +45,5 @@ public class Account extends User{
 
     private boolean blocket;
 
-    @OneToMany
-    private List<UserContact> friendList;
+
 }

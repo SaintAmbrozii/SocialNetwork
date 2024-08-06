@@ -2,11 +2,15 @@ package com.example.socialnetwork.service;
 import com.example.socialnetwork.domain.UserContact;
 import com.example.socialnetwork.domain.UserStatus;
 import com.example.socialnetwork.domain.searchcriteria.ContactsSearchCriteria;
+import com.example.socialnetwork.dto.UserContactDTO;
 import com.example.socialnetwork.exception.NotFoundException;
+import com.example.socialnetwork.mapper.UserContactMapper;
 import com.example.socialnetwork.repo.UserContactRepo;
-import com.example.socialnetwork.repo.UserRepo;
 import com.example.socialnetwork.repo.specifications.UserContactSpecs;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,13 +21,20 @@ import java.util.stream.Collectors;
 @Service
 public class ContactService {
 
-    private final UserRepo userRepo;
+
     private final UserContactRepo contactRepo;
+    private final UserContactMapper userContactMapper;
 
 
-    public ContactService(UserRepo userRepo, UserContactRepo contactRepo) {
-        this.userRepo = userRepo;
+    public ContactService(UserContactRepo contactRepo, UserContactMapper userContactMapper) {
         this.contactRepo = contactRepo;
+        this.userContactMapper = userContactMapper;
+    }
+
+    public UserContactDTO findById(Long id) {
+
+        return userContactMapper.convertToDto(contactRepo.findById(id).orElseThrow());
+
     }
 
 
@@ -36,6 +47,17 @@ public class ContactService {
         return contactRepo.findAll(UserContactSpecs.getSeacrhContactSpecs(criteria)).stream().map(UserContact::getToAccountId).collect(Collectors.toList());
 
     }
+
+    public List<Long> getFriendsIds(Long id,UserPrincipal principal) {
+
+        return contactRepo.findAll(UserContactSpecs.getSeacrhContactSpecs(new ContactsSearchCriteria(id,UserStatus.FRIEND)))
+                .stream()
+                .map(UserContact::getToAccountId)
+                .collect(Collectors.toList());
+
+    }
+
+
 
     public void approveFriend(Long id, UserPrincipal principal) {
 
@@ -72,7 +94,7 @@ public class ContactService {
     }
 
 
-    public List<UserContact> createRequestFriends(Long id, UserPrincipal principal) {
+    public List<UserContactDTO> createRequestFriends(Long id, UserPrincipal principal) {
 
 
         if (alreadySendRequests(id,principal).isEmpty()) {
@@ -93,11 +115,14 @@ public class ContactService {
                     .build();
             userContactList.add(fromContact);
 
-            return contactRepo.saveAll(userContactList);
+            contactRepo.saveAll(userContactList);
+
+            return userContactMapper.convertToDtoList(userContactList);
 
         }
         throw new  NotFoundException("данный пользователь отсуствует");
     }
+
     public void blockFriend(Long id,UserPrincipal principal) {
 
         List<UserContact> requestUserFromFriends = getRequestFrom(id,principal);
@@ -179,7 +204,28 @@ public class ContactService {
 
         contactRepo.save(new UserContact(principal.getId(), UserStatus.BLOCKED, id));
 
+    }
 
+    private boolean checkIfAccountSearch(ContactsSearchCriteria criteria) {
+
+        return (criteria.getFirstName() != null || criteria.getAgeFrom() != null ||
+                criteria.getAgeTo() != null || criteria.getCity() != null || criteria.getCountry() != null);
+
+    }
+
+    public List<Long> getBlockedUserFriendsIds(UserPrincipal principal) {
+
+        return contactRepo.findAll(UserContactSpecs.getSeacrhContactSpecs(new ContactsSearchCriteria(principal.getId(),UserStatus.BLOCKED)))
+                .stream()
+                .map(UserContact::getToAccountId)
+                .collect(Collectors.toList());
+    }
+    public List<Long> getBlockedFriendsIds(Long id) {
+
+        return contactRepo.findAll(UserContactSpecs.getSeacrhContactSpecs(new ContactsSearchCriteria(id,UserStatus.BLOCKED)))
+                .stream()
+                .map(UserContact::getToAccountId)
+                .collect(Collectors.toList());
     }
 
 
