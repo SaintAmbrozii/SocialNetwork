@@ -19,7 +19,6 @@ public class Account extends User{
 
     @Column(name = "about")
     private String about;
-
     @Column(name = "photo_uri")
     private String photoUri;
 
@@ -44,6 +43,8 @@ public class Account extends User{
     private boolean online;
 
     private boolean blocket;
+
+
 
 
 }

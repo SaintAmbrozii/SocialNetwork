@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class AccountSearchCriteria {
 
+    private Long id;
 
     private List<Long> ids;
 
@@ -18,7 +19,7 @@ public class AccountSearchCriteria {
 
     private String author;
 
-    private String firstName;
+    private String name;
 
     private String lastName;
 
