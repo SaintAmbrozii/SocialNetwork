@@ -50,6 +50,19 @@ public class UserContactDTO {
         return dto;
     }
 
+    public static UserContactDTO toAccountDto(AccountDTO accountDTO) {
+        UserContactDTO contactDTO = new UserContactDTO();
+        contactDTO.setId(accountDTO.getId());
+        contactDTO.setStatus(accountDTO.getStatus());
+        contactDTO.setFistName(accountDTO.getName());
+        contactDTO.setLastName(accountDTO.getLastname());
+        contactDTO.setCountry(accountDTO.getCountry());
+        contactDTO.setCity(accountDTO.getCity());
+        contactDTO.setPhoto(accountDTO.getPhotoUri());
+        contactDTO.setBirthDate(accountDTO.getBirthDate());
+        return contactDTO;
+    }
+
 
 
 

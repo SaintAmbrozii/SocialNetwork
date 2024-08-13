@@ -1,5 +1,6 @@
 package com.example.socialnetwork.dto;
 
+import com.example.socialnetwork.domain.Account;
 import com.example.socialnetwork.domain.UserStatus;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
@@ -40,4 +41,19 @@ public class AccountDTO extends UserDTO {
     private boolean online;
 
     private boolean blocket;
+
+    public static AccountDTO toDto(Account account) {
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setAbout(account.getAbout());
+        accountDTO.setCity(account.getCity());
+        accountDTO.setCountry(account.getCountry());
+        accountDTO.setBirthDate(account.getBirthDate());
+        accountDTO.setCreatedOn(account.getCreatedOn());
+        accountDTO.setLastOnlineTime(account.getLastOnlineTime());
+        accountDTO.setPhone(account.getPhone());
+        accountDTO.setPhotoUri(accountDTO.getPhotoUri());
+        accountDTO.setRegDate(account.getRegDate());
+        accountDTO.setUpdatedOn(account.getUpdatedOn());
+        return accountDTO;
+    }
 }

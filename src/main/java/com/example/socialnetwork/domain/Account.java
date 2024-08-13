@@ -22,6 +22,10 @@ public class Account extends User{
     @Column(name = "photo_uri")
     private String photoUri;
 
+    @Column(name = "status_code")
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
     @Column(name = "reg_date", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private ZonedDateTime regDate;
     @Column(name = "birth_date", columnDefinition = "TIMESTAMP WITH TIME ZONE")

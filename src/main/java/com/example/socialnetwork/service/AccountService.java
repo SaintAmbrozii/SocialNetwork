@@ -2,13 +2,19 @@ package com.example.socialnetwork.service;
 
 import com.example.socialnetwork.domain.Account;
 import com.example.socialnetwork.domain.User;
+import com.example.socialnetwork.domain.searchcriteria.AccountSearchCriteria;
+import com.example.socialnetwork.dto.AccountDTO;
 import com.example.socialnetwork.exception.NotFoundException;
 import com.example.socialnetwork.repo.AccountRepo;
 import com.example.socialnetwork.repo.UserRepo;
+import com.example.socialnetwork.repo.specifications.AccountSpesc;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,10 +23,32 @@ public class AccountService {
 
     private final UserRepo userRepo;
     private final AccountRepo accountRepo;
+    private final ContactService contactService;
 
-    public AccountService(UserRepo userRepo, AccountRepo accountRepo) {
+    public AccountService(UserRepo userRepo, AccountRepo accountRepo, ContactService contactService) {
         this.userRepo = userRepo;
         this.accountRepo = accountRepo;
+        this.contactService = contactService;
+    }
+
+    public Page<AccountDTO> searchAccount(AccountSearchCriteria criteria, Pageable page,UserPrincipal principal) {
+
+        List<Long> blockedByIds = contactService.getBlockedFriendsIds(principal.getId());
+        blockedByIds.addAll(contactService.getBlockedUserFriendsIds(principal));
+        if (blockedByIds.size() != 0) {
+            criteria.setBlockedByIds(blockedByIds);
+        }
+
+        Page<Account> accountSearchPages;
+        if (criteria.getAuthor() != null) {
+            accountSearchPages = accountRepo.findAll(AccountSpesc.getSearchByAuthor(criteria), page);
+        } else {
+            accountSearchPages = accountRepo.findAll(AccountSpesc.getSearchByAllFields(criteria), page);
+        }
+
+        accountSearchPages.stream().forEach(ac->ac.setStatus(contactService.getStatus(ac.getId(), principal)));
+
+        return accountSearchPages.map(AccountDTO::toDto);
     }
 
     public Account create(Account account,UserPrincipal principal) {
@@ -46,9 +74,13 @@ public class AccountService {
         }
     }
 
-    public Optional<Account> getMyAccount(UserPrincipal principal) {
-       return  accountRepo.findById(principal.getId());
+    public Optional<AccountDTO> getMyAccount(UserPrincipal principal) {
+       return  accountRepo.findById(principal.getId()).map(AccountDTO::toDto);
 
+    }
+
+    public Optional<AccountDTO> findById(Long id) {
+        return accountRepo.findById(id).map(AccountDTO::toDto);
     }
 
 

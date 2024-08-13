@@ -33,4 +33,18 @@ public class AccountSearchCriteria {
 
     private Integer ageFrom;
 
+
+    public static AccountSearchCriteria toContactSearchCriteria(ContactsSearchCriteria criteria) {
+        AccountSearchCriteria searchCriteria = new AccountSearchCriteria();
+        searchCriteria.setId(criteria.getId());
+        searchCriteria.setIds(criteria.getIds());
+        searchCriteria.setName(criteria.getFirstName());
+        searchCriteria.setCity(criteria.getCity());
+        searchCriteria.setCountry(criteria.getCountry());
+        return searchCriteria;
+    }
+
+
+
+
 }

@@ -1,15 +1,17 @@
 package com.example.socialnetwork.service;
 import com.example.socialnetwork.domain.UserContact;
 import com.example.socialnetwork.domain.UserStatus;
+import com.example.socialnetwork.domain.searchcriteria.AccountSearchCriteria;
 import com.example.socialnetwork.domain.searchcriteria.ContactsSearchCriteria;
+import com.example.socialnetwork.dto.AccountDTO;
 import com.example.socialnetwork.dto.UserContactDTO;
 import com.example.socialnetwork.exception.NotFoundException;
 import com.example.socialnetwork.mapper.UserContactMapper;
 import com.example.socialnetwork.repo.UserContactRepo;
 import com.example.socialnetwork.repo.specifications.UserContactSpecs;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -24,16 +26,46 @@ public class ContactService {
 
     private final UserContactRepo contactRepo;
     private final UserContactMapper userContactMapper;
+    private final AccountService accountService;
 
-
-    public ContactService(UserContactRepo contactRepo, UserContactMapper userContactMapper) {
+    public ContactService(UserContactRepo contactRepo, UserContactMapper userContactMapper, AccountService accountService) {
         this.contactRepo = contactRepo;
         this.userContactMapper = userContactMapper;
+        this.accountService = accountService;
     }
 
     public UserContactDTO findById(Long id) {
 
         return contactRepo.findById(id).map(UserContactDTO::toDto).orElseThrow();
+
+    }
+
+    public Page<UserContactDTO> getAll(ContactsSearchCriteria searchDto, Pageable page,UserPrincipal principal) {
+
+
+        if (checkIfAccountSearch(searchDto)) {
+            return accountService.searchAccount(userContactMapper.contactSearchCriteriaToAccountSearch(searchDto), page,principal)
+                    .map(userContactMapper::accountDtoToFriendDto);
+        }
+
+        if (searchDto.getStatus() == null) {
+            searchDto.setStatus(UserStatus.NONE);
+        }
+
+        searchDto.setIdFrom(principal.getId());
+
+        List<UserContact> contactList = contactRepo.findAll(UserContactSpecs.getSeacrhContactSpecs(searchDto));
+        List<UserContactDTO> friendContactDtos = new ArrayList<>();
+
+        for (UserContact friend : contactList) {
+            if (searchDto.getStatus().equals(UserStatus.BLOCKED) || !friend.getStatus().equals(UserStatus.BLOCKED)) {
+                UserContactDTO friendContactDto = userContactMapper.accountDtoToFriendDto(accountService.findById(friend.getToAccountId()).orElseThrow());
+                friendContactDto.setStatus(friend.getStatus());
+                friendContactDtos.add(friendContactDto);
+            }
+        }
+
+        return new PageImpl<>(friendContactDtos, page, friendContactDtos.toArray().length);
 
     }
 
@@ -211,6 +243,14 @@ public class ContactService {
         return (criteria.getFirstName() != null || criteria.getAgeFrom() != null ||
                 criteria.getAgeTo() != null || criteria.getCity() != null || criteria.getCountry() != null);
 
+    }
+
+    public UserStatus getStatus(Long id,UserPrincipal principal) {
+        List<UserContact> friend = getRequestFrom(id,principal);
+        if (friend.isEmpty()) {
+            return UserStatus.NONE;
+        }
+        return friend.get(0).getStatus();
     }
 
     public List<Long> getBlockedUserFriendsIds(UserPrincipal principal) {

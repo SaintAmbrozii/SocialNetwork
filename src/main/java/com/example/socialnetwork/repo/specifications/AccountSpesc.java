@@ -52,16 +52,16 @@ public class AccountSpesc {
     public static Specification<Account> getAuthorName(AccountSearchCriteria criteria) {
         return (root, criteriaQuery, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (!ObjectUtils.isEmpty("author"))
-                predicates.add(cb.equal(root.get("name"), criteria.getAuthor().toLowerCase()));
+            if (!ObjectUtils.isEmpty("name"))
+                predicates.add(cb.like(root.get("name"), criteria.getAuthor()));
             return cb.and(predicates.toArray(new Predicate[]{}));
         };
     }
     public static Specification<Account> getAuthorLastName(AccountSearchCriteria criteria) {
         return (root, criteriaQuery, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (!ObjectUtils.isEmpty("author"))
-                predicates.add(cb.equal(root.get("lastName"), criteria.getAuthor().toLowerCase()));
+            if (!ObjectUtils.isEmpty("lastname"))
+                predicates.add(cb.like(root.get("lastName"), criteria.getAuthor()));
             return cb.and(predicates.toArray(new Predicate[]{}));
         };
     }
@@ -70,7 +70,7 @@ public class AccountSpesc {
         return (root, criteriaQuery, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (!ObjectUtils.isEmpty("name"))
-                predicates.add(cb.equal(root.get("name"), criteria.getName().toLowerCase()));
+                predicates.add(cb.like(root.get("name"), criteria.getName().toLowerCase()));
             return cb.and(predicates.toArray(new Predicate[]{}));
         };
     }
@@ -78,7 +78,7 @@ public class AccountSpesc {
         return (root, criteriaQuery, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (!ObjectUtils.isEmpty("lastname"))
-                predicates.add(cb.equal(root.get("lastname"), criteria.getLastName().toLowerCase()));
+                predicates.add(cb.like(root.get("lastname"), criteria.getLastName().toLowerCase()));
             return cb.and(predicates.toArray(new Predicate[]{}));
         };
     }
