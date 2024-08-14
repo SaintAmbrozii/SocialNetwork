@@ -2,6 +2,7 @@ package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.domain.User;
 
+import com.example.socialnetwork.domain.searchcriteria.ContactsSearchCriteria;
 import com.example.socialnetwork.domain.searchcriteria.UserSearchCriteria;
 import com.example.socialnetwork.dto.UserDTO;
 import com.example.socialnetwork.repo.UserRepo;

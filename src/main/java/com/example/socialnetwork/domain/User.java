@@ -75,9 +75,14 @@ public class User  {
     private Set<GrantedAuthority> authority = new HashSet<>();
 
 
-
     @OneToMany(mappedBy = "user")
     private List<Token> tokenList;
+
+    @OneToMany(mappedBy = "owner")
+    private List<GroupChatRoom> groupChatRoomOwned;
+
+    @ManyToMany(mappedBy = "users")
+    private List<GroupChatRoom> groupChatRoomList;
 
 
 

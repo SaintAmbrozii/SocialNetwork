@@ -5,6 +5,7 @@ import com.example.socialnetwork.security.oauth.*;
 import com.example.socialnetwork.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -39,7 +40,7 @@ public class SecurityConfig {
     public SecurityConfig(TokenProvider tokenProvider, CustomUserDetailsService customUserDetailsService,
                           Oauth2AuthentificationSucessHandler oAuth2AuthenticationSuccessHandler,
                           Oauth2AuthentificationFailureHandler oAuth2AuthenticationFailureHandler,
-                          HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository, LogoutService logoutService) {
+                          HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository, @Lazy LogoutService logoutService) {
         this.tokenProvider = tokenProvider;
         this.customUserDetailsService = customUserDetailsService;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;

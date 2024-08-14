@@ -9,6 +9,7 @@ import com.example.socialnetwork.repo.AccountRepo;
 import com.example.socialnetwork.repo.UserRepo;
 import com.example.socialnetwork.repo.specifications.AccountSpesc;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class AccountService {
     private final AccountRepo accountRepo;
     private final ContactService contactService;
 
-    public AccountService(UserRepo userRepo, AccountRepo accountRepo, ContactService contactService) {
+    public AccountService(UserRepo userRepo, AccountRepo accountRepo, @Lazy ContactService contactService) {
         this.userRepo = userRepo;
         this.accountRepo = accountRepo;
         this.contactService = contactService;

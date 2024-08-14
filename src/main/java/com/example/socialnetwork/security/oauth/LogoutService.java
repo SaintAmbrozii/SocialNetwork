@@ -1,14 +1,12 @@
 package com.example.socialnetwork.security.oauth;
 
-import com.example.socialnetwork.domain.Account;
 import com.example.socialnetwork.domain.Token;
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.repo.TokenRepo;
 import com.example.socialnetwork.service.AccountService;
-import com.example.socialnetwork.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
@@ -17,11 +15,15 @@ import org.springframework.util.StringUtils;
 import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
 public class LogoutService implements LogoutHandler {
 
     private final TokenRepo tokenRepository;
     private final AccountService accountService;
+
+    public LogoutService(TokenRepo tokenRepository, @Lazy AccountService accountService) {
+        this.tokenRepository = tokenRepository;
+        this.accountService = accountService;
+    }
 
 
     @Override

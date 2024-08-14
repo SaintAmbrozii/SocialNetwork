@@ -10,8 +10,10 @@ import com.example.socialnetwork.mapper.UserContactMapper;
 import com.example.socialnetwork.repo.UserContactRepo;
 import com.example.socialnetwork.repo.specifications.UserContactSpecs;
 import com.example.socialnetwork.security.oauth.UserPrincipal;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,7 @@ public class ContactService {
     private final UserContactMapper userContactMapper;
     private final AccountService accountService;
 
-    public ContactService(UserContactRepo contactRepo, UserContactMapper userContactMapper, AccountService accountService) {
+    public ContactService(UserContactRepo contactRepo, UserContactMapper userContactMapper, @Lazy AccountService accountService) {
         this.contactRepo = contactRepo;
         this.userContactMapper = userContactMapper;
         this.accountService = accountService;
@@ -42,9 +44,8 @@ public class ContactService {
 
     public Page<UserContactDTO> getAll(ContactsSearchCriteria searchDto, Pageable page,UserPrincipal principal) {
 
-
         if (checkIfAccountSearch(searchDto)) {
-            return accountService.searchAccount(userContactMapper.contactSearchCriteriaToAccountSearch(searchDto), page,principal)
+            return accountService.searchAccount(AccountSearchCriteria.toContactSearchCriteria(searchDto), page,principal)
                     .map(userContactMapper::accountDtoToFriendDto);
         }
 
@@ -68,6 +69,8 @@ public class ContactService {
         return new PageImpl<>(friendContactDtos, page, friendContactDtos.toArray().length);
 
     }
+
+
 
 
 
